@@ -114,3 +114,7 @@ cache
 !.yarn/versions
 
 secret.yaml
+
+# Environnement variables
+*.env*
+!*.env.example
