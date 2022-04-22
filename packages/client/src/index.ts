@@ -19,12 +19,16 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
   name: chainName,
   ensAddress,
 });
+
 (async () => {
-  const name = program.args[0];
-  let resolver = await provider.getResolver(name);
-  let resolveName = await provider.resolveName(name);
+  const [name] = program.args;
+  let [resolver, resolveName] = await Promise.all([
+    provider.getResolver(name),
+    provider.resolveName(name),
+  ]);
   if (resolver) {
     console.log(`resolver address ${resolver.address}`);
     console.log(`eth address ${resolveName}`);
+    // TODO: Resolve name
   }
 })();

@@ -5,11 +5,17 @@ module.exports = async ({ deployments }) => {
   const signers = await ethers.getSigners();
   const owner = signers[0].address;
 
-  await deploy("ENSRegistry", {
+  await deploy("L2Registry", {
+    from: owner,
+    args: [],
+    log: true,
+  });
+
+  await deploy("L2PublicResolver", {
     from: owner,
     args: [],
     log: true,
   });
 };
 
-module.exports.tags = ["test"];
+module.exports.tags = ["test", "l2"];

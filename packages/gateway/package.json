@@ -31,8 +31,11 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@ensdomains/offchain-resolver-gateway",
+  "name": "@ledger/ens-l2-resolver-gateway",
   "author": "Nick Johnson",
+  "contributors": [
+    "qdqd <qdqdqdqdqd@protonmail.com>"
+  ],
   "module": "dist/gateway.esm.js",
   "size-limit": [
     {
@@ -59,9 +62,10 @@
     "@chainlink/ccip-read-server": "^0.2.1",
     "@chainlink/ethers-ccip-read-provider": "^0.2.3",
     "@ensdomains/ens-contracts": "^0.0.8",
-    "@ensdomains/offchain-resolver-contracts": "^0.2.1",
-    "commander": "^8.3.0",
+    "@ledger/ens-l2-resolver-contracts": "^0.2.1",
+    "@types/express": "^4.17.13",
     "dotenv": "^15.0.0",
-    "ethers": "^5.6.2"
+    "ethers": "^5.6.2",
+    "express": "^4.17.3"
   }
 }

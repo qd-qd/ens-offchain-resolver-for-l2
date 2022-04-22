@@ -32,8 +32,11 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@ensdomains/offchain-resolver-client",
+  "name": "@ledger/ens-l2-resolver-client",
   "author": "Nick Johnson",
+  "contributors": [
+    "qdqd <qdqdqdqdqd@protonmail.com>"
+  ],
   "module": "dist/client.esm.js",
   "size-limit": [
     {

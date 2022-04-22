@@ -1,7 +1,7 @@
 import { makeServer } from '../src/server';
 import { ethers } from 'ethers';
 import { JSONDatabase } from '../src/json';
-import { abi as IResolverService_abi } from '@ensdomains/offchain-resolver-contracts/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
+import { abi as IResolverService_abi } from '@ledger/ens-l2-resolver-contracts/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 import { ETH_COIN_TYPE } from '../src/utils';
 

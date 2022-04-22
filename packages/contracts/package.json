@@ -1,8 +1,11 @@
 {
-  "name": "@ensdomains/offchain-resolver-contracts",
+  "name": "@ledger/ens-l2-resolver-contracts",
   "version": "0.2.1",
   "repository": "git@github.com:ensdomains/offchain-resolver.git",
   "author": "Nick Johnson <arachnid@notdot.net>",
+  "contributors": [
+    "qdqd <qdqdqdqdqd@protonmail.com>"
+  ],
   "license": "MIT",
   "files": [
     "contracts/*.sol",
