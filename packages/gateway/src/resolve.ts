@@ -22,7 +22,7 @@ const resolve = async (name: string) => {
 
   // Remove the subdomain before resolving
   // TODO: maybe include the subdomain in the layer2 directly
-  const nameToResolve = name.replace('.test', '');
+  const nameToResolve = name.replace('.ledger', '');
   const address = await l2Registry.owner(ethers.utils.namehash(nameToResolve));
 
   return address;

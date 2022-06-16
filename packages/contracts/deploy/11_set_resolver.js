@@ -18,12 +18,12 @@ module.exports = async ({ deployments }) => {
   );
   await registry.setSubnodeOwner(
     ethers.utils.namehash("eth"),
-    ethers.utils.id("test"),
+    ethers.utils.id("ledger"),
     owner,
     { from: owner }
   );
   await registry.setResolver(
-    ethers.utils.namehash("test.eth"),
+    ethers.utils.namehash("ledger.eth"),
     resolver.address,
     { from: owner }
   );

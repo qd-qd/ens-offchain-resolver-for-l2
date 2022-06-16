@@ -1,18 +1,18 @@
 {
-    "test.eth": {
+    "ledger.eth": {
       "addresses": {
         "60": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
       },
       "text": { "email": "test@example.com" }
     },
-    "john.test.eth": {
+    "john.ledger.eth": {
       "addresses": {
           "0": "bc1qncyrc4stjezfptjuyazmxrydd44achnvs3sf5e",
           "60": "0xd1699002d9548DCA840268ba1bd1afa27E0ba62d"
       },
       "text": { "email": "jonathan.giamporcaro@ledger.fr" }
     },
-    "*.test.eth": {
+    "*.ledger.eth": {
       "addresses": {
         "60": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
       },

@@ -180,7 +180,7 @@ const TEST_DB = {
     },
     text: { email: 'wildcard@example.com' },
   },
-  'test.eth': {
+  'ledger.eth': {
     addresses: {
       [ETH_COIN_TYPE]: '0x3456345634563456345634563456345634563456',
     },
@@ -256,26 +256,26 @@ describe('End to end test', () => {
   describe('resolve()', () => {
     it('resolves calls to addr(bytes32)', async () => {
       const callData = Resolver.encodeFunctionData('addr(bytes32)', [
-        ethers.utils.namehash('test.eth'),
+        ethers.utils.namehash('ledger.eth'),
       ]);
-      const result = await resolver.resolve(dnsName('test.eth'), callData);
+      const result = await resolver.resolve(dnsName('ledger.eth'), callData);
       const resultData = Resolver.decodeFunctionResult('addr(bytes32)', result);
       expect(resultData).to.deep.equal([
-        TEST_DB['test.eth'].addresses[ETH_COIN_TYPE],
+        TEST_DB['ledger.eth'].addresses[ETH_COIN_TYPE],
       ]);
     });
 
     it('resolves calls to text(bytes32,string)', async () => {
       const callData = Resolver.encodeFunctionData('text(bytes32,string)', [
-        ethers.utils.namehash('test.eth'),
+        ethers.utils.namehash('ledger.eth'),
         'email',
       ]);
-      const result = await resolver.resolve(dnsName('test.eth'), callData);
+      const result = await resolver.resolve(dnsName('ledger.eth'), callData);
       const resultData = Resolver.decodeFunctionResult(
         'text(bytes32,string)',
         result
       );
-      expect(resultData).to.deep.equal([TEST_DB['test.eth'].text['email']]);
+      expect(resultData).to.deep.equal([TEST_DB['ledger.eth'].text['email']]);
     });
   });
 });

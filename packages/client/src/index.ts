@@ -29,6 +29,5 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
   if (resolver) {
     console.log(`resolver address ${resolver.address}`);
     console.log(`eth address ${resolveName}`);
-    // TODO: Resolve name
   }
 })();

@@ -27,15 +27,15 @@ describe('JSONDatabase', () => {
   const db = new JSONDatabase(TEST_DB, 300);
 
   it('returns the zero address for nonexistent names', () => {
-    expect(db.addr('test.test', ETH_COIN_TYPE)).toStrictEqual({
+    expect(db.addr('ledger.test', ETH_COIN_TYPE)).toStrictEqual({
       addr: ZERO_ADDRESS,
       ttl: 300,
     });
   });
 
   it('resolves exact names', () => {
-    expect(db.addr('test.eth', ETH_COIN_TYPE)).toStrictEqual({
-      addr: TEST_DB['test.eth'].addresses[ETH_COIN_TYPE],
+    expect(db.addr('ledger.eth', ETH_COIN_TYPE)).toStrictEqual({
+      addr: TEST_DB['ledger.eth'].addresses[ETH_COIN_TYPE],
       ttl: 300,
     });
   });
