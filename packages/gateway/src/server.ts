@@ -1,5 +1,5 @@
 import { Server } from '@chainlink/ccip-read-server';
-import { abi as IResolverService_abi } from '@ledger/ens-l2-resolver-contracts/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
+import { abi as IResolverService_abi } from '@ledger/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 import { ethers } from 'ethers';
 import { hexConcat, Result } from 'ethers/lib/utils';

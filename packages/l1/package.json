@@ -1,5 +1,5 @@
 {
-  "name": "@ledger/ens-l2-resolver-contracts",
+  "name": "@ledger/ens-l2-resolver-l1",
   "version": "0.2.1",
   "repository": "git@github.com:ensdomains/offchain-resolver.git",
   "author": "Nick Johnson <arachnid@notdot.net>",
@@ -12,6 +12,7 @@
     "artifacts/contracts/**/*.json"
   ],
   "scripts": {
+    "start": "npx hardhat node --port 8001",
     "test": "run() { npx hardhat test; }; run",
     "lint": "npx hardhat check",
     "build": "npx hardhat compile",

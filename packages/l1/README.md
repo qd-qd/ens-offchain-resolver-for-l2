@@ -1,4 +1,4 @@
-# ENS Offchain Resolver Contracts
+# ENS Offchain Resolver L1 Contracts
 
 This package contains Solidity contracts you can customise and deploy to provide offchain resolution of ENS names.
 
@@ -16,9 +16,3 @@ This library facilitates checking signatures over CCIP read responses.
 
 ### [OffchainResolver.sol](contracts/OffchainResolver.sol)
 This contract implements the offchain resolution system. Set this contract as the resolver for a name, and that name and all its subdomains that are not present in the ENS registry will be resolved via the provided gateway by supported clients.
-
-### [L2Registry.sol](contracts/L2/L2Registry.sol)
-This contract implements an ENS registry. Names stored on the L2 would be stored in this registry contract.
-
-### [L2PublicResolver.sol](contracts/L2/L2PublicResolver.sol)
-This contract implements a minimalist resolver. It will be setup by default for all the names stored in the L2 registry.

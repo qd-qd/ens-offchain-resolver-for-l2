@@ -1,16 +1,15 @@
-const { task } = require("hardhat/config");
-
 require("@nomiclabs/hardhat-etherscan");
-require('@nomiclabs/hardhat-ethers');
-require('@nomiclabs/hardhat-waffle');
-require('hardhat-deploy');
-require('hardhat-deploy-ethers');
+require("@nomiclabs/hardhat-ethers");
+require("@nomiclabs/hardhat-waffle");
+require("hardhat-deploy");
+require("hardhat-deploy-ethers");
 
 real_accounts = undefined;
-if(process.env.DEPLOYER_KEY && process.env.OWNER_KEY) {
+if (process.env.DEPLOYER_KEY && process.env.OWNER_KEY) {
   real_accounts = [process.env.OWNER_KEY, process.env.DEPLOYER_KEY];
 }
-const gatewayurl = "https://offchain-resolver-example.uc.r.appspot.com/{sender}/{data}.json"
+const gatewayurl =
+  "https://offchain-resolver-example.uc.r.appspot.com/{sender}/{data}.json";
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -20,7 +19,8 @@ module.exports = {
   networks: {
     hardhat: {
       throwOnCallFailures: false,
-      gatewayurl:'http://localhost:8080/{sender}/{data}.json',
+      gatewayurl: "http://localhost:8080/{sender}/{data}.json",
+      chainId: 11111,
     },
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,
@@ -49,10 +49,10 @@ module.exports = {
       chainId: 1,
       accounts: real_accounts,
       gatewayurl,
-    }
+    },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
   namedAccounts: {
     owner: {
@@ -61,5 +61,5 @@ module.exports = {
     deployer: {
       default: 1,
     },
-  }
+  },
 };

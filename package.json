@@ -9,7 +9,8 @@
   ],
   "license": "MIT",
   "workspaces": [
-    "packages/contracts",
+    "packages/l1",
+    "packages/l2",
     "packages/gateway",
     "packages/client"
   ],
@@ -17,6 +18,8 @@
   "scripts": {
     "start:gateway": "yarn workspace @ledger/ens-l2-resolver-gateway start",
     "start:client": "yarn workspace @ledger/ens-l2-resolver-client start",
+    "start:l1": "yarn workspace @ledger/ens-l2-resolver-l1 start",
+    "start:l2": "yarn workspace @ledger/ens-l2-resolver-l2 start",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",

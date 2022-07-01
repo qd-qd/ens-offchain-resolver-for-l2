@@ -54,9 +54,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledger/ens-l2-resolver-contracts@workspace:.":
+"@ledger/ens-l2-resolver-l1@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@ledger/ens-l2-resolver-contracts@workspace:."
+  resolution: "@ledger/ens-l2-resolver-l1@workspace:."
   dependencies:
     "@chainlink/ethers-ccip-read-provider": ^0.1.0
     "@ensdomains/ens-contracts": ^0.0.8

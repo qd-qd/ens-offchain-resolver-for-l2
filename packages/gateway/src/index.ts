@@ -16,6 +16,8 @@ if (privateKey.startsWith('@')) {
   );
 }
 
+console.log('in');
+
 const address = ethers.utils.computeAddress(privateKey);
 const signer = new ethers.utils.SigningKey(privateKey);
 const app = makeApp(signer, '/');

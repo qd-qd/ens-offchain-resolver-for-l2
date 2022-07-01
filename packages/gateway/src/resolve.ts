@@ -3,11 +3,11 @@ import { abi as L2Registry_abi } from './utils/L2Registry.json';
 
 const resolve = async (name: string) => {
   if (process.env.PRIVATE_KEY === undefined) throw new Error('no private key');
-  if (process.env.L2_REGISTRY_CONTRACT_ADDRESS === undefined)
+  if (process.env.REGISTRY_CONTRACT_ADDRESS === undefined)
     throw new Error('no registry address');
 
   // Provider
-  const defaultProvider = ethers.getDefaultProvider('http://127.0.0.1:8545/');
+  const defaultProvider = ethers.getDefaultProvider('http://127.0.0.1:8002/');
   // Signer
   const customSigner = new ethers.Wallet(
     process.env.PRIVATE_KEY,
@@ -15,7 +15,7 @@ const resolve = async (name: string) => {
   );
   // The Registry stored in the layer 2
   const l2Registry = new ethers.Contract(
-    process.env.L2_REGISTRY_CONTRACT_ADDRESS,
+    process.env.REGISTRY_CONTRACT_ADDRESS,
     L2Registry_abi,
     customSigner
   );

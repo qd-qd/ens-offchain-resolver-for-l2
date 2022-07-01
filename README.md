@@ -82,10 +82,10 @@ Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 Take note of the address to which the L2Registry was deployed (0xe7f1...).
 
-Open the `.env.local` file in the `packages/gateway` directory and add the address to the `L2_REGISTRY_CONTRACT_ADDRESS` variable.
+Open the `.env.local` file in the `packages/gateway` directory and add the address to the `REGISTRY_CONTRACT_ADDRESS` variable.
 
 ```
-L2_REGISTRY_CONTRACT_ADDRESS=<MY_L2_REGISTRY_ADDRESS>
+REGISTRY_CONTRACT_ADDRESS=<MY_L2_REGISTRY_ADDRESS>
 ```
 
 In the first tab you opened, kill and restart the gateway server:

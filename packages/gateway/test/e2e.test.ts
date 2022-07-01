@@ -9,7 +9,7 @@ import { JSONDatabase } from '../src/json';
 import { makeServer } from '../src/server';
 import { ETH_COIN_TYPE } from '../src/utils';
 import Resolver_abi from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
-import OffchainResolver_abi from '@ledger/ens-l2-resolver-contracts/artifacts/contracts/OffchainResolver.sol/OffchainResolver.json';
+import OffchainResolver_abi from '@ledger/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/OffchainResolver.json';
 import {
   BaseProvider,
   BlockTag,

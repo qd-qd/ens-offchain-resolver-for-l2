@@ -1,17 +1,19 @@
 import { Command } from 'commander';
 import ethers from 'ethers';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: './.env.local' });
 
 const program = new Command();
 program
-  .requiredOption('-r --registry <address>', 'ENS registry address')
-  .option('-p --provider <url>', 'web3 provider URL', 'http://localhost:8545/')
-  .option('-i --chainId <chainId>', 'chainId', '31337')
+  .option('-p --provider <url>', 'web3 provider URL', 'http://localhost:8001/')
+  .option('-i --chainId <chainId>', 'chainId', '11111')
   .option('-n --chainName <name>', 'chainName', 'unknown')
   .argument('<name>');
 
 program.parse(process.argv);
 const options = program.opts();
-const ensAddress = options.registry;
+const ensAddress = process.env.REGISTRY_ADDRESS;
 const chainId = parseInt(options.chainId);
 const chainName = options.chainName;
 const provider = new ethers.providers.JsonRpcProvider(options.provider, {
