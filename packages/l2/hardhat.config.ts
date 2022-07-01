@@ -30,6 +30,8 @@ const config: HardhatUserConfig = {
     hardhat: {
       throwOnCallFailures: false,
       chainId: 22222,
+      // TODO: Remove/Refacto L2NameWrapper.sol ?
+      allowUnlimitedContractSize: true,
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",

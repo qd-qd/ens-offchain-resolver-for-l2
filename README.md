@@ -141,6 +141,7 @@ If you try to resolve a non-ledger domain using the command above, you will see 
 - [Nick Johnson](https://github.com/arachnid), "EIP DRAFT: Storage of SECP256k1 public keys in ENS," Ethereum Improvement Proposals, [Link](https://github.com/Arachnid/EIPs/blob/56cce2377d4b1f38632315a6aa71ac980202f9cf/EIPS/eip-draft-ens-public-keys.md)
 - [Nick Johnson](https://github.com/arachnid), [0age](https://github.com/0age), "ENSIP-10: Wildcard Resolution," ENS Improvement Proposals, no. 10, February 2022, [Link](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution)
 - [Nick Johnson](https://github.com/arachnid), "EIP-1844: ENS Interface Discovery," Ethereum Improvement Proposals, no. 1844, March 2019. [Link](https://eips.ethereum.org/EIPS/eip-1844)
+- [Dean Eigenmann](mailto:dean@ens.domains), [Nick Johnson](mailto:nick@ens.domains), "EIP-1577: contenthash field for ENS," Ethereum Improvement Proposals, no. 1577, November 2018. [Link](https://eips.ethereum.org/EIPS/eip-1577).
 
 #### Documentation
 

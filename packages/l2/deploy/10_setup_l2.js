@@ -1,8 +1,11 @@
 const { ethers } = require("hardhat");
 
-module.exports = async ({ deployments }) => {
-  const { deploy } = deployments;
-  const [{ deployer }, signers] = await Promise.all([
+/*
+** This script set the root node, set the qdqd.eth node 
+** and set the public resolver to the freshly created node
+*/
+module.exports = async () => {
+  const [, signers] = await Promise.all([
     getNamedAccounts(),
     ethers.getSigners(),
   ]);
@@ -13,7 +16,7 @@ module.exports = async ({ deployments }) => {
     ethers.getContract("L2PublicResolver"),
   ]);
 
-  // create the eth domain
+  // create the root node
   await l2Registry.setSubnodeOwner(
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     ethers.utils.id("eth"),
@@ -35,9 +38,6 @@ module.exports = async ({ deployments }) => {
     l2PublicResolver.address,
     { from: owner }
   );
-
-  // set a custom name
-  await l2PublicResolver.setName(ethers.utils.namehash("qdqd.eth"), "john");
 };
 
-module.exports.tags = ["test"];
+module.exports.tags = ["deploy-setup-l2"];
