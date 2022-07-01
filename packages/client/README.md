@@ -3,7 +3,7 @@ This package implements a very simple dig-like tool for querying ENS names, with
 
 ## Usage:
 ```
-yarn start:client qdqd.ledger.eth
+yarn start:client qdqd.mydao.eth
 ```
 
 `--provider` can optionally be specified to supply the URL to an Ethereum web3 provider; it defaults to `http://localhost:8001/`.

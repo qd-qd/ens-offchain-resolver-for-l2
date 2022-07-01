@@ -1,5 +1,5 @@
 {
-  "name": "@ledger/ens-l2-resolver",
+  "name": "@mydao/ens-l2-resolver",
   "version": "0.0.2",
   "description": "ENS identity L2-resolved",
   "main": "index.js",
@@ -16,10 +16,10 @@
   ],
   "private": true,
   "scripts": {
-    "start:gateway": "yarn workspace @ledger/ens-l2-resolver-gateway start",
-    "start:client": "yarn workspace @ledger/ens-l2-resolver-client start",
-    "start:l1": "yarn workspace @ledger/ens-l2-resolver-l1 start",
-    "start:l2": "yarn workspace @ledger/ens-l2-resolver-l2 start",
+    "start:gateway": "yarn workspace @mydao/ens-l2-resolver-gateway start",
+    "start:client": "yarn workspace @mydao/ens-l2-resolver-client start",
+    "start:l1": "yarn workspace @mydao/ens-l2-resolver-l1 start",
+    "start:l2": "yarn workspace @mydao/ens-l2-resolver-l2 start",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",

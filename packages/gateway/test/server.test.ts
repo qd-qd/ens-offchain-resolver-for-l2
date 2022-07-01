@@ -1,7 +1,7 @@
 import { makeServer } from '../src/server';
 import { ethers } from 'ethers';
 import { JSONDatabase } from '../src/json';
-import { abi as IResolverService_abi } from '@ledger/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
+import { abi as IResolverService_abi } from '@mydao/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 import { ETH_COIN_TYPE } from '../src/utils';
 
@@ -17,7 +17,7 @@ const TEST_DB = {
     },
     text: { email: 'wildcard@example.com' },
   },
-  'ledger.eth': {
+  'mydao.eth': {
     addresses: {
       [ETH_COIN_TYPE]: '0x3456345634563456345634563456345634563456',
     },
@@ -103,11 +103,11 @@ describe('makeServer', () => {
 
   describe('addr(bytes32)', () => {
     it('resolves exact names', async () => {
-      const response = await makeCall('addr(bytes32)', 'ledger.eth');
+      const response = await makeCall('addr(bytes32)', 'mydao.eth');
       expect(response).toStrictEqual({
         status: 200,
         result: Resolver.encodeFunctionResult('addr(bytes32)', [
-          TEST_DB['ledger.eth'].addresses[ETH_COIN_TYPE],
+          TEST_DB['mydao.eth'].addresses[ETH_COIN_TYPE],
         ]),
       });
     });
@@ -123,7 +123,7 @@ describe('makeServer', () => {
     });
 
     it('resolves nonexistent names', async () => {
-      const response = await makeCall('addr(bytes32)', 'test.ledger');
+      const response = await makeCall('addr(bytes32)', 'test.mydao');
       expect(response).toStrictEqual({
         status: 200,
         result: Resolver.encodeFunctionResult('addr(bytes32)', [ZERO_ADDRESS]),
@@ -135,13 +135,13 @@ describe('makeServer', () => {
     it('resolves exact names', async () => {
       const response = await makeCall(
         'addr(bytes32,uint256)',
-        'ledger.eth',
+        'mydao.eth',
         ETH_COIN_TYPE
       );
       expect(response).toStrictEqual({
         status: 200,
         result: Resolver.encodeFunctionResult('addr(bytes32,uint256)', [
-          TEST_DB['ledger.eth'].addresses[ETH_COIN_TYPE],
+          TEST_DB['mydao.eth'].addresses[ETH_COIN_TYPE],
         ]),
       });
     });
@@ -163,7 +163,7 @@ describe('makeServer', () => {
     it('resolves nonexistent names', async () => {
       const response = await makeCall(
         'addr(bytes32,uint256)',
-        'test.ledger',
+        'test.mydao',
         ETH_COIN_TYPE
       );
       expect(response).toStrictEqual({
@@ -179,13 +179,13 @@ describe('makeServer', () => {
     it('resolves exact names', async () => {
       const response = await makeCall(
         'text(bytes32,string)',
-        'ledger.eth',
+        'mydao.eth',
         'email'
       );
       expect(response).toStrictEqual({
         status: 200,
         result: Resolver.encodeFunctionResult('text(bytes32,string)', [
-          TEST_DB['ledger.eth'].text['email'],
+          TEST_DB['mydao.eth'].text['email'],
         ]),
       });
     });
@@ -207,7 +207,7 @@ describe('makeServer', () => {
     it('resolves nonexistent names', async () => {
       const response = await makeCall(
         'text(bytes32,string)',
-        'test.ledger',
+        'test.mydao',
         'email'
       );
       expect(response).toStrictEqual({

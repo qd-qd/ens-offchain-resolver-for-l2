@@ -1,5 +1,5 @@
 {
-  "name": "@ledger/ens-l2-resolver-l2",
+  "name": "@mydao/ens-l2-resolver-l2",
   "version": "0.0.1",
   "repository": "git@github.com:ensdomains/offchain-resolver.git",
   "author": "qdqd <qdqdqdqdqd@protonmail.com>",

@@ -9,7 +9,7 @@ import { JSONDatabase } from '../src/json';
 import { makeServer } from '../src/server';
 import { ETH_COIN_TYPE } from '../src/utils';
 import Resolver_abi from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
-import OffchainResolver_abi from '@ledger/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/OffchainResolver.json';
+import OffchainResolver_abi from '@mydao/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/OffchainResolver.json';
 import {
   BaseProvider,
   BlockTag,
@@ -180,7 +180,7 @@ const TEST_DB = {
     },
     text: { email: 'wildcard@example.com' },
   },
-  'ledger.eth': {
+  'mydao.eth': {
     addresses: {
       [ETH_COIN_TYPE]: '0x3456345634563456345634563456345634563456',
     },
@@ -256,26 +256,26 @@ describe('End to end test', () => {
   describe('resolve()', () => {
     it('resolves calls to addr(bytes32)', async () => {
       const callData = Resolver.encodeFunctionData('addr(bytes32)', [
-        ethers.utils.namehash('ledger.eth'),
+        ethers.utils.namehash('mydao.eth'),
       ]);
-      const result = await resolver.resolve(dnsName('ledger.eth'), callData);
+      const result = await resolver.resolve(dnsName('mydao.eth'), callData);
       const resultData = Resolver.decodeFunctionResult('addr(bytes32)', result);
       expect(resultData).to.deep.equal([
-        TEST_DB['ledger.eth'].addresses[ETH_COIN_TYPE],
+        TEST_DB['mydao.eth'].addresses[ETH_COIN_TYPE],
       ]);
     });
 
     it('resolves calls to text(bytes32,string)', async () => {
       const callData = Resolver.encodeFunctionData('text(bytes32,string)', [
-        ethers.utils.namehash('ledger.eth'),
+        ethers.utils.namehash('mydao.eth'),
         'email',
       ]);
-      const result = await resolver.resolve(dnsName('ledger.eth'), callData);
+      const result = await resolver.resolve(dnsName('mydao.eth'), callData);
       const resultData = Resolver.decodeFunctionResult(
         'text(bytes32,string)',
         result
       );
-      expect(resultData).to.deep.equal([TEST_DB['ledger.eth'].text['email']]);
+      expect(resultData).to.deep.equal([TEST_DB['mydao.eth'].text['email']]);
     });
   });
 });

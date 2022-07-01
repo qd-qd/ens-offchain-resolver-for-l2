@@ -48,7 +48,7 @@ describe('OffchainResolver', function (accounts) {
 
     describe('resolve()', async () => {
         it('returns a CCIP-read error', async () => {
-            await expect(resolver.resolve(dnsName('ledger.eth'), '0x')).to.be.revertedWith('OffchainLookup');
+            await expect(resolver.resolve(dnsName('mydao.eth'), '0x')).to.be.revertedWith('OffchainLookup');
         });
     });
 
@@ -56,14 +56,14 @@ describe('OffchainResolver', function (accounts) {
         let name, expires, iface, callData, resultData, sig;
 
         before(async () => {
-            name = 'ledger.eth';
+            name = 'mydao.eth';
             expires = Math.floor(Date.now() / 1000 + 3600);
             // Encode the nested call to 'addr'
             iface = new ethers.utils.Interface(["function addr(bytes32) returns(address)"]);
-            const addrData = iface.encodeFunctionData("addr", [namehash.hash('ledger.eth')]);
+            const addrData = iface.encodeFunctionData("addr", [namehash.hash('mydao.eth')]);
 
             // Encode the outer call to 'resolve'
-            callData = resolver.interface.encodeFunctionData("resolve", [dnsName('ledger.eth'), addrData]);
+            callData = resolver.interface.encodeFunctionData("resolve", [dnsName('mydao.eth'), addrData]);
 
             // Encode the result data
             resultData = iface.encodeFunctionResult("addr", [TEST_ADDRESS]);
