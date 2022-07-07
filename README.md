@@ -18,7 +18,7 @@ There is two important smart-contrat: The OffchainResolver smart-contract that w
 
 The OffchainResolver smart contract provides a resolver stub that implement CCIP Read (EIP 3668) and ENS wildcard resolution (ENSIP 10). When queried for a name, it directs the client to query the gateway server. When called back with the gateway server response, the resolver verifies the signature was produced by an authorised signer, and returns the response to the client.
 
-The L2* contracts replicate the ENS ecosystem on the layer 2 network. That to that, we control how records are stored on-chain and all interaction with them.
+The L2 contracts replicate the ENS ecosystem on the layer 2 network. That to that, we control how records are stored on-chain and all interaction with them.
 
 ## Trying it out
 
@@ -49,6 +49,7 @@ yarn start:gateway
 ```
 
 You will see output similar to the following:
+
 ```
 Serving on port 8000 with signing address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ```
@@ -82,10 +83,10 @@ Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 Take note of the address to which the L2Registry was deployed (0xe7f1...).
 
-Open the `.env.local` file in the `packages/gateway` directory and add the address to the `REGISTRY_CONTRACT_ADDRESS` variable.
+Open the `.env.local` file in the `packages/gateway` directory and add the address to the `REGISTRY_ADDRESS` variable.
 
 ```
-REGISTRY_CONTRACT_ADDRESS=<MY_L2_REGISTRY_ADDRESS>
+REGISTRY_ADDRESS=<MY_L2_REGISTRY_ADDRESS>
 ```
 
 In the first tab you opened, kill and restart the gateway server:

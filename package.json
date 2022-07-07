@@ -2,6 +2,7 @@
   "name": "@mydao/ens-l2-resolver",
   "version": "0.0.2",
   "description": "ENS identity L2-resolved",
+  "repository": "git@github.com:qd-qd/ens-l2-resolver.git",
   "main": "index.js",
   "author": "Nick Johnson <arachnid@notdot.net>",
   "contributors": [

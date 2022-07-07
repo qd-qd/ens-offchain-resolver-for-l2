@@ -1,42 +1,40 @@
 const { ethers } = require("hardhat");
 
 /*
-** This script set the root node, set the qdqd.eth node 
-** and set the public resolver to the freshly created node
-*/
+ ** This script set the root node, set the qdqd.eth node
+ ** and set the public resolver to the freshly created node
+ */
 module.exports = async () => {
-  const [, signers] = await Promise.all([
-    getNamedAccounts(),
-    ethers.getSigners(),
-  ]);
-  const owner = signers[0].address;
-
-  const [l2Registry, l2PublicResolver] = await Promise.all([
-    ethers.getContract("L2Registry"),
-    ethers.getContract("L2PublicResolver"),
-  ]);
+  const [admin, owner] = await ethers.getSigners();
+  const l2PublicResolver = await ethers.getContract("L2PublicResolver");
 
   // create the root node
-  await l2Registry.setSubnodeOwner(
+  await deployments.execute(
+    "L2Registry",
+    { from: admin.address, log: true },
+    "setSubnodeOwner",
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     ethers.utils.id("eth"),
-    owner,
-    { from: owner }
+    admin.address
   );
 
   // create the qdqd.eth domain
-  await l2Registry.setSubnodeOwner(
+  await deployments.execute(
+    "L2Registry",
+    { from: admin.address, log: true },
+    "setSubnodeOwner",
     ethers.utils.namehash("eth"),
     ethers.utils.id("qdqd"),
-    owner,
-    { from: owner }
+    owner.address
   );
 
   // set the custom resolver
-  await l2Registry.setResolver(
+  await deployments.execute(
+    "L2Registry",
+    { from: owner.address, log: true },
+    "setResolver",
     ethers.utils.namehash("qdqd.eth"),
-    l2PublicResolver.address,
-    { from: owner }
+    l2PublicResolver.address
   );
 };
 

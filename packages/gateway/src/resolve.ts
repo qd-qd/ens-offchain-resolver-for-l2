@@ -1,31 +1,53 @@
 import { ethers } from 'ethers';
-import { abi as L2Registry_abi } from './utils/L2Registry.json';
+import { abi as L2PublicResolverABI } from './utils/L2PublicResolver.json';
+import setupProvider from "./setupProvider";
 
-const resolve = async (name: string) => {
-  if (process.env.PRIVATE_KEY === undefined) throw new Error('no private key');
-  if (process.env.REGISTRY_CONTRACT_ADDRESS === undefined)
-    throw new Error('no registry address');
+const { provider, wallet } = setupProvider();
 
-  // Provider
-  const defaultProvider = ethers.getDefaultProvider('http://127.0.0.1:8002/');
-  // Signer
-  const customSigner = new ethers.Wallet(
-    process.env.PRIVATE_KEY,
-    defaultProvider
-  );
-  // The Registry stored in the layer 2
-  const l2Registry = new ethers.Contract(
-    process.env.REGISTRY_CONTRACT_ADDRESS,
-    L2Registry_abi,
-    customSigner
-  );
+const fetchData = async (signature: string, nodeToResolve: string, args: ethers.utils.Result, resolverAddress: string) => {
+  const publicResolver = new ethers.Contract(resolverAddress, L2PublicResolverABI, wallet);
+  const nodehash = ethers.utils.namehash(nodeToResolve);
 
-  // Remove the subdomain before resolving
-  // TODO: maybe include the subdomain in the layer2 directly
-  const nameToResolve = name.replace('.mydao', '');
-  const address = await l2Registry.owner(ethers.utils.namehash(nameToResolve));
+  switch (signature) {
+    case 'addr(bytes32,uint256)':
+      return publicResolver['addr(bytes32,uint256)'](nodehash, args.coinType);
 
-  return address;
+    case 'ABI(bytes32,uint256)':
+      return publicResolver[signature](args.contentTypes);
+
+    case 'text(bytes32,string)':
+      return publicResolver[signature](nodehash, args.key);
+
+    case 'dnsRecord(bytes32,bytes32,uint16)':
+      return publicResolver[signature](nodehash, args.name, args.resource);
+    case 'hasDNSRecords(bytes32,bytes32)':
+      return publicResolver[signature](nodehash, args.name);
+
+    case 'addr(bytes32)':
+    case 'contenthash(bytes32)':
+    case 'zonehash(bytes32)':
+    case 'pubkey(bytes32)':
+    case 'name(bytes32)':
+      return publicResolver[signature](nodehash);
+
+    default:
+      throw new Error("Resolution not supported for this method");
+  }
+};
+
+// TODO:
+// - Manage when there is no resolver attached
+const resolve = async (
+  name: string,
+  signature: string,
+  args: ethers.utils.Result,
+) => {
+  const nodeToResolve = name.replace('.mydao', '');
+  const resolver = await provider.getResolver(nodeToResolve);
+
+  if (!resolver?.address) throw new Error("No resolver");
+
+  return fetchData(signature, nodeToResolve, args, resolver.address);
 };
 
 export default resolve;

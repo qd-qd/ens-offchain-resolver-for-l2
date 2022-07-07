@@ -1,7 +1,4 @@
-const { ethers } = require("hardhat");
-
-// @DEV paste here the address printed by `yarn start:gateway`
-const owner = "0x83EAD75c0191c3184CaAd30FF8061e89f9d851a1";
+require("dotenv").config({ path: "./.env" });
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deploy } = deployments;
@@ -13,7 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   await deploy("OffchainResolver", {
     from: deployer,
-    args: [network.config.gatewayurl, [owner]],
+    args: [network.config.gatewayurl, [process.env.SIGNER]],
     log: true,
   });
 };

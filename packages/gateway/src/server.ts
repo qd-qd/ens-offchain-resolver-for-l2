@@ -1,23 +1,13 @@
 import { Server } from '@chainlink/ccip-read-server';
-import { abi as IResolverService_abi } from '@mydao/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 import { ethers } from 'ethers';
 import { hexConcat, Result } from 'ethers/lib/utils';
+import { abi as IResolverService_abi } from './utils/IResolverService.json';
 import resolve from './resolve';
+import decodeDnsName from './utils/decodeDnsName';
 
-const Resolver = new ethers.utils.Interface(Resolver_abi);
-
-function decodeDnsName(dnsname: Buffer) {
-  const labels = [];
-  let idx = 0;
-  while (true) {
-    const len = dnsname.readUInt8(idx);
-    if (len === 0) break;
-    labels.push(dnsname.slice(idx + 1, idx + len + 1).toString('utf8'));
-    idx += len + 1;
-  }
-  return labels.join('.');
-}
+const IResolver = new ethers.utils.Interface(Resolver_abi);
+const TTL = parseInt(process.env.TTL || "") || 300;
 
 export function makeServer(signer: ethers.utils.SigningKey) {
   const server = new Server();
@@ -26,14 +16,10 @@ export function makeServer(signer: ethers.utils.SigningKey) {
       type: 'resolve',
       func: async ([encodedName, data]: Result, request) => {
         const name = decodeDnsName(Buffer.from(encodedName.slice(2), 'hex'));
-
-        const resolvedAddress = await resolve(name);
-        const { signature } = Resolver.parseTransaction({ data });
-        const result = Resolver.encodeFunctionResult(signature, [
-          resolvedAddress,
-        ]);
-        // TODO: set the TTL as an env variable
-        const validUntil = Math.floor(Date.now() / 1000 + 300 /* ttl */);
+        const { signature, args } = IResolver.parseTransaction({ data });
+        const resolvedData = await resolve(name, signature, args);
+        const result = IResolver.encodeFunctionResult(signature, [resolvedData]);
+        const validUntil = Math.floor(Date.now() / 1000 + TTL);
 
         // Hash and sign the response
         let messageHash = ethers.utils.solidityKeccak256(

@@ -1,7 +1,7 @@
 {
   "name": "@mydao/ens-l2-resolver-l1",
   "version": "0.2.1",
-  "repository": "git@github.com:ensdomains/offchain-resolver.git",
+  "repository": "git@github.com:qd-qd/ens-l2-resolver.git",
   "author": "Nick Johnson <arachnid@notdot.net>",
   "contributors": [
     "qdqd <qdqdqdqdqd@protonmail.com>"
@@ -32,6 +32,7 @@
   "dependencies": {
     "@ensdomains/ens-contracts": "^0.0.8",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
+    "dotenv": "^16.0.1",
     "hardhat-deploy-ethers": "^0.3.0-beta.13"
   }
 }

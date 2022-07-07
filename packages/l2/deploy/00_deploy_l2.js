@@ -1,9 +1,9 @@
 const { ethers } = require("hardhat");
 
 /*
-** This script deploy the registry, the metadata service, the
-** registrar, the name wrapper and the public resolver.
-*/
+ ** This script deploy the registry, the metadata service, the
+ ** registrar, the name wrapper and the public resolver.
+ */
 module.exports = async ({ deployments }) => {
   const { deploy } = deployments;
   const signers = await ethers.getSigners();

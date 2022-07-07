@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { ethers } from 'ethers';
 import dotenv from 'dotenv';
 
-dotenv.config({ path: './.env.local' });
+dotenv.config({ path: './.env' });
 
 const PORT = process.env.PORT || '8080';
 
