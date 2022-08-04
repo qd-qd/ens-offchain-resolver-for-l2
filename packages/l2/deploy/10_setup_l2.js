@@ -11,17 +11,17 @@ module.exports = async () => {
   // create the root node
   await deployments.execute(
     "L2Registry",
-    { from: admin.address, log: true },
+    { from: admin.address },
     "setSubnodeOwner",
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     ethers.utils.id("eth"),
     admin.address
   );
 
-  // create the qdqd.eth domain
+  // register qdqd.eth domain
   await deployments.execute(
     "L2Registry",
-    { from: admin.address, log: true },
+    { from: admin.address },
     "setSubnodeOwner",
     ethers.utils.namehash("eth"),
     ethers.utils.id("qdqd"),
@@ -31,10 +31,18 @@ module.exports = async () => {
   // set the custom resolver
   await deployments.execute(
     "L2Registry",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setResolver",
     ethers.utils.namehash("qdqd.eth"),
     l2PublicResolver.address
+  );
+
+  // log the address of the owner of the ENS
+  // this address must match the address output when you run `yarn start:client qdqd.mydao.eth`
+  console.log(
+    "\n\n\x1b[34m\x1b[1m",
+    `Owner of the ENS address -> ${owner.address}`,
+    "\x1b[0m\n\n"
   );
 };
 

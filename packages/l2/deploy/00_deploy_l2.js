@@ -43,6 +43,14 @@ module.exports = async ({ deployments }) => {
     args: [registry.address, nameWrapper.address],
     log: true,
   });
+
+  // log the address of the registry deployed
+  // this address must be copied to the .env file of the gateway package (REGISTRY_ADDRESS)
+  console.log(
+    "\n\n\x1b[34m\x1b[1m",
+    `Registry address -> ${registry.address}`,
+    "\x1b[0m\n\n"
+  );
 };
 
 module.exports.tags = ["deploy-deploy-l2"];

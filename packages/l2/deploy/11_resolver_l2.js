@@ -9,10 +9,21 @@ module.exports = async ({ deployments }) => {
   const [, owner] = await ethers.getSigners();
   const node = ethers.utils.namehash("qdqd.eth");
 
+  // TODO: shouldn't this be managed automatically on-chain during the registration step?
+  // Set ETH address
+  await deployments.execute(
+    "L2PublicResolver",
+    { from: owner.address },
+    "setAddr(bytes32,uint256,bytes)",
+    node,
+    60,
+    formatsByCoinType[60].decoder(owner.address)
+  );
+
   // Set BITCOIN address
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
     0,
@@ -22,7 +33,7 @@ module.exports = async ({ deployments }) => {
   // Set COSMOS address
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
     118,
@@ -34,7 +45,7 @@ module.exports = async ({ deployments }) => {
   // Set DOGE address
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
     3,
@@ -57,7 +68,7 @@ module.exports = async ({ deployments }) => {
   for (const [key, value] of texts) {
     await deployments.execute(
       "L2PublicResolver",
-      { from: owner.address, log: true },
+      { from: owner.address },
       "setText",
       node,
       key,
@@ -68,7 +79,7 @@ module.exports = async ({ deployments }) => {
   // Set a public key
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setPubkey",
     node,
     "0x934ddbf47f355fd7569b46dbeb8255e06c207b17a54e13fec5e201ac2ddf5ae4",
@@ -78,7 +89,7 @@ module.exports = async ({ deployments }) => {
   // Set content hash: ipfs://QmdTPkMMBWQvL8t7yXogo7jq5pAcWg8J7RkLrDsWZHT82y
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setContenthash",
     node,
     `0x${contentHash.fromIpfs(
@@ -89,7 +100,7 @@ module.exports = async ({ deployments }) => {
   // Set canonical name
   await deployments.execute(
     "L2PublicResolver",
-    { from: owner.address, log: true },
+    { from: owner.address },
     "setName",
     node,
     `${owner.address.toLowerCase()}.addr.reverse`
