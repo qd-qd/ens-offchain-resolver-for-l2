@@ -4,13 +4,15 @@ import setupProvider from "./setupProvider";
 
 const { provider, wallet } = setupProvider();
 
+// TODO: Rework this function to use the generic `provider.call(...)`
 const fetchData = async (signature: string, nodeToResolve: string, args: ethers.utils.Result, resolverAddress: string) => {
+  // Set the contract to request it directly
   const publicResolver = new ethers.Contract(resolverAddress, L2PublicResolverABI, wallet);
   const nodehash = ethers.utils.namehash(nodeToResolve);
 
   switch (signature) {
     case 'addr(bytes32,uint256)':
-      return publicResolver['addr(bytes32,uint256)'](nodehash, args.coinType);
+      return publicResolver[signature](nodehash, args.coinType);
 
     case 'ABI(bytes32,uint256)':
       return publicResolver[signature](args.contentTypes);
@@ -23,7 +25,6 @@ const fetchData = async (signature: string, nodeToResolve: string, args: ethers.
     case 'hasDNSRecords(bytes32,bytes32)':
       return publicResolver[signature](nodehash, args.name);
 
-    case 'addr(bytes32)':
     case 'contenthash(bytes32)':
     case 'zonehash(bytes32)':
     case 'pubkey(bytes32)':
@@ -35,19 +36,24 @@ const fetchData = async (signature: string, nodeToResolve: string, args: ethers.
   }
 };
 
-// TODO:
-// - Manage when there is no resolver attached
 const resolve = async (
   name: string,
   signature: string,
   args: ethers.utils.Result,
 ) => {
   const nodeToResolve = name.replace('.mydao', '');
+
+  // manage the basic case when the address of the owner is requested
+  if (signature === 'addr(bytes32)')
+    return (await provider.resolveName(nodeToResolve)) ?? ethers.constants.AddressZero;
+
+  // manage the case when informations from the resolver are requested
   const resolver = await provider.getResolver(nodeToResolve);
+  if (resolver?.address)
+    return fetchData(signature, nodeToResolve, args, resolver?.address);
 
-  if (!resolver?.address) throw new Error("No resolver");
-
-  return fetchData(signature, nodeToResolve, args, resolver.address);
+  // complex data are requested but the name doesn't have a resolver set
+  throw new Error('No resolver attached to this name');
 };
 
 export default resolve;
