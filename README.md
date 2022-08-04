@@ -1,34 +1,32 @@
 # ENS Offchain Resolver
 
-This repository contains smart contracts and a node.js gateway server that together allow hosting ENS names offchain using [EIP 3668](https://eips.ethereum.org/EIPS/eip-3668) and [ENSIP 10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution).
+This repository shows how it is possible to resolve subdomains from an EVM-enabled blockchain based on [EIP 3668](https://eips.ethereum.org/EIPS/eip-3668) and [ENSIP 10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution). The goal is to store the second-level domain on the main network while all subdomains attached to it are resolved in another EVM-enabled blockchain.
 
 ## Overview
 
-ENS resolution requests to the resolver implemented in this repository are responded to with a directive to query a gateway server for the answer. The gateway server generates and signs a response, which is sent back to the original resolver for decoding and verification. The gateway fetch the from a new registry contract that can be hosted on any network we want to. Full details of this request flow can be found below.
+ENS resolution requests to the resolver implemented in this repository are responded to with a directive to query a gateway server for the answer. The gateway server requests the blockchain where the records are stored and signs a response, which is sent back to the original resolver for decoding and verification. Full details of this request flow can be found below.
 
-All of this happens transparently in supported clients (such as ethers.js, or future versions of web3.js which will have this functionality built-in).
+All of this happens transparently for end users. Offchain resolution is handled by supported clients such as ethers.js.
 
-## [Gateway Server](packages/gateway)
+## [Gateway Server](packages/gateway/readme.md)
 
-The gateway server implements CCIP Read (EIP 3668), and answers requests by looking up the names in a store stored on-chain. Once a record is retrieved, it is signed using a user-provided key to assert its validity, and both record and signature are returned to the caller so they can be provided to the contract that initiated the request.
+The gateway server implements the CCIP Read ([EIP 3668](https://eips.ethereum.org/EIPS/eip-3668)) and responds to requests by searching for names stored on-chain. Once a record is retrieved, it is signed using a predefined key to ensure its validity, then the record and the signature are returned to the caller so that they can be provided to the requesting contract, hosted on the mainnet. More details [here](packages/gateway).
 
-## [Contracts](packages/contracts)
+## [Client](packages/client/readme.md)
 
-There is two important smart-contrat: The OffchainResolver smart-contract that will be stored on-chain on the L1 and the L2PublicResolver/L2Registry smart-contracts that are stored on-chain on the L2/side-chain we decide to.
+The client package simulates a dApp or any scripts that would like to resolve an ENS and fetch additional informations. More details [here](packages/client).
 
-The OffchainResolver smart contract provides a resolver stub that implement CCIP Read (EIP 3668) and ENS wildcard resolution (ENSIP 10). When queried for a name, it directs the client to query the gateway server. When called back with the gateway server response, the resolver verifies the signature was produced by an authorised signer, and returns the response to the client.
+## [l1](packages/l1/readme.md)
 
-The L2 contracts replicate the ENS ecosystem on the layer 2 network. That to that, we control how records are stored on-chain and all interaction with them.
+This package is a minimalist reproduction of ENS' behaviour on the mainnet. In addition, everything needed to be [EIP 3668](https://eips.ethereum.org/EIPS/eip-3668)/[ENSIP 10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution) compliant is implemented there. The offchain resolver is defined on the second-level domain which will allow subdomains to be resolved elsewhere. More details [here](packages/l1).
+
+## [l2](packages/l2/readme.md)
+
+Last but not least, this package implements an arbitrary way to store subdomain information on the layer2 side. Contracts defined here are requested by the gateway. In this implementation, we deploy a new registry which will store all the subdomains and we push a ENS-compliant PublicResolver that can be used by subdomains owners to store arbitrary data. More details [here](packages/l2).
 
 ## Trying it out
 
-Start by generating an Ethereum private key; this will be used as a signing key for any messages signed by your gateway service. You can use a variety of tools for this; for instance, this Python snippet will generate one for you:
-
-```
-python3 -c "import os; import binascii; print('0x%s' % binascii.hexlify(os.urandom(32)).decode('utf-8'))"
-```
-
-For the rest of this demo we will be using the standard test private key `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`.
+### Init the project
 
 First, install dependencies and build all packages:
 
@@ -36,92 +34,152 @@ First, install dependencies and build all packages:
 yarn && yarn build
 ```
 
-Next, create a new `.env.local` file in the `packages/gateway` directory, and add the previously generated private key to the `.env.local` file
+Then, run this command to create the .env files you will need
 
-```
-PRIVATE_KEY=<MY_PRIVATE_KEY>
+```bash
+cp packages/l1/.env.example packages/l1/.env && \
+cp packages/gateway/.env.example packages/gateway/.env && \
+cp packages/client/.env.example packages/client/.env
 ```
 
-Next, run the gateway:
+Now we created the .env files, we'll fill in the right values.
+
+In your terminal, start the l2 package by running
+
+```bash
+yarn start:l2
+```
+
+Looking at the logs, you should find a line like this:
+
+> Registry address -> 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+This is the address of the registry deployed on the layer2. Copy this address and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the gateway package](packages/gateway/.env). The gateway needs it to know which contrat fetch.
+
+Stop the l2 package. As you can see in the .env file of the gateway, the gateway needs a private key to works. This private key will be used as a signing key for any messages signed by your gateway service. It is important to ensure the data is unaltered.
+
+For the demo purpose, I would suggest you to generate a new private key. You can use a variety of tools for this; for instance, this Python snippet will generate one for you:
+
+```bash
+python3 -c "import os; import binascii; print('0x%s' % binascii.hexlify(os.urandom(32)).decode('utf-8'))"
+```
+
+> Do not send mainnet tokens to any account addresses derived using this private key. Consider this private key as publicly known. If you add any of those accounts to a wallet (eg Metamask), be very careful to avoid sending any mainnet Ether to them: consider naming the account something like "Unsafe" in order to prevent any mistakes.
+
+Once your private key is generated, paste it as a value for the variable `PRIVATE_KEY` in the [.env file of the gateway package](packages/gateway/.env).
+
+We now have all we need to start the gateway package! Start it by running:
 
 ```bash
 yarn start:gateway
 ```
 
-You will see output similar to the following:
+The gateway is up! In the output of the script, the signer address has been printed. This address is derived from the private key filled in your .env file. We need to push it on-chain on the l1 to check if the received data are from the gateway. Let's copy/paste this address and set it as a value for the `SIGNER` envionment variable in the [.env file of the l1 package](/packages/l1/.env).
 
-```
-Serving on port 8000 with signing address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-```
+Now that the signer address is filled in, stop the gateway and start the l1 package by running:
 
-Next, edit `contracts/deploy/10_offchain_resolver.js`; replacing the address on line 4 with the one output when you ran the command above. Then, in a new terminal, build and run a test node with an ENS registry and the offchain resolver deployed:
-
-```
-cd packages/contracts
-npx hardhat node
+```bash
+yarn start:l1
 ```
 
-You will see output similar to the following:
+Once again, running the l1 printed something interesting. In the log, you'll find a line like this:
 
-```
-Compilation finished successfully
-deploying "ENSRegistry" (tx: 0x8b353610592763c0abd8b06305e9e82c1b14afeecac99b1ce1ee54f5271baa2c)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 1084532 gas
-deploying "OffchainResolver" (tx: 0xdb3142c2c4d214b58378a5261859a7f104908a38b4b9911bb75f8f21aa28e896)...: deployed at 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 with 1533637 gas
-Started HTTP and WebSocket JSON-RPC server at http://127.0.0.1:9545/
+> Registry address -> 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-Accounts
-========
+This is the address of the registry published on the l1. This is only required for the demo, in production, you will use the official registry deployed by ENS instead of deploying yours. Copy this value and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the client package](packages/client/.env). The client needs it to know which contrat request.
 
-WARNING: These accounts, and their private keys, are publicly known.
-Any funds sent to them on Mainnet or any other live network WILL BE LOST.
+That's it, everything is configured. Let's up the stack now.
 
-Account #0: 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 (10000 ETH)
-Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+### Run the project
 
-(truncated for brevity)
-```
+Open 4 different terminal instances at the root of the repository.
 
-Take note of the address to which the L2Registry was deployed (0xe7f1...).
+In the first one, up the layer1 network by running:
 
-Open the `.env.local` file in the `packages/gateway` directory and add the address to the `REGISTRY_ADDRESS` variable.
+```bash
+yarn start:l1
 
-```
-REGISTRY_ADDRESS=<MY_L2_REGISTRY_ADDRESS>
+# `yarn start` if you are in the directory of the package
 ```
 
-In the first tab you opened, kill and restart the gateway server:
+In the second one, up the layer2 network by running:
+
+```bash
+yarn start:l2
+
+# `yarn start` if you are in the directory of the package
+```
+
+In the third one, up the gateway by running:
 
 ```bash
 yarn start:gateway
+
+# `yarn start` if you are in the directory of the package
 ```
 
-Now, take note of the address to which the ENSRegistry was deployed (0x5FbDB...).
+Finally, in the last instance, you can run the client's script to test the setup. You need to pass an ENS as a parameter of the command to test the flow. First, try to resolve a ENS that is not a subdomain of `mydao.eth` by running:
 
-Finally, in a third terminal, run the example client to demonstrate resolving a name:
-
-```
-yarn start:client --registry 0x5FbDB2315678afecb367f032d93F642f64180aa3 qdqd.mydao.eth
+```bash
+yarn start:client aloha.eth
 ```
 
-You should see output similar to the following:
+These informations should be printed:
 
 ```
-resolver address 0x8464135c8F25Da09e49BC8782676a84730C318bC
-eth address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+-> L1 informations
+  l1 offchain resolver address: undefined
+  eth address: null
 ```
 
-The address displayed in the output should match the address of the first account generated by hardhat when you run the command (`npx hardhat node`). This is because I use this account to take a the `qdqd.mydao.eth` node as you can see in the file `packages/contracts/deploy/10_offchain_resolver.js`.
+That means the script works as expected. The script wasn't able to find an owner for the ENS you passed, because it doesn't exist on our local network. This ENS is still free to register.
 
-If you try to resolve a mydao subdomain that does not exist yet, you should see the following output:
+Now, let's try to resolve a subdomain of the `mydao.eth` that has not been registered on the l2. For example by running:
+
+```bash
+yarn start:client aloha.mydao.eth
+```
+
+These informations should be printed:
 
 ```
-resolver address 0x8464135c8F25Da09e49BC8782676a84730C318bC
-eth address null
+-> L1 informations
+  l1 offchain resolver address: 0x8464135c8F25Da09e49BC8782676a84730C318bC
+  eth address: null
 ```
 
 This is because the script correctly find the custom mydao's resolver but the subdomain is free in the registry stored in the layer2.
 
-If you try to resolve a non-mydao domain using the command above, you will see no outputs.
+Let's see what happens if you resolve `qdqd.mydao.eth`, the subdomain registered on the layer2 by the [deployment script](packages/l2/deploy/10_setup_l2.js).
+
+```bash
+yarn start:client qdqd.mydao.eth
+```
+
+```
+-> L1 informations
+  l1 offchain resolver address: 0x8464135c8F25Da09e49BC8782676a84730C318bC
+  eth address: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+
+-> Data fetched from the layer2 resolver
+  eth address: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+  btc address: bc1q8fnmuy9cfzmym062a93cuqh2l8l0p46gxy74pg
+  doge address: DBs4WcRE7eysKwRxHNX88XZVCQ9M6QSUSz
+  twitter account: qdqd___
+  content hash: ipfs://QmdTPkMMBWQvL8t7yXogo7jq5pAcWg8J7RkLrDsWZHT82y
+  avatar: https://metadata.ens.domains/mainnet/avatar/qdqdqd.eth?v=1.0
+  twitter: qdqd___
+  github: qd-qd
+  telegram: qd_qd_qd
+  email: qdqdqdqdqd@protonmail.com
+  url: https://ens.domains/
+  description: smart-contract engineer
+  notice: This is a custom notice
+  keywords: solidity,ethereum,developer
+  company: ledger
+```
+
+It works! Every data set during the deployement process ([this file](packages/l2/deploy/11_resolver_l2.js)) have been resolve as expected. The script correctly found the custom offchain resolver set in the layer1 for mydao, discovered the subdomain is owned and fetched all the data requested by the script. Note that the address displayed in the output should match the address of the first account printed when you run the command (`yarn start:l2`). This is because we use this account to register the `qdqd.mydao.eth` node as you can see in this file [`packages/contracts/deploy/10_offchain_resolver.js`](packages/l2/deploy/10_setup_l2.js).
 
 ## Appendix
 

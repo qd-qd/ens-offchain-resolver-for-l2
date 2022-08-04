@@ -29,21 +29,23 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
     provider.resolveName(name),
   ]);
 
+  console.group("\n-> L1 informations")
+  console.log(`l1 offchain resolver address: ${resolver?.address}`);
+  console.log(`eth address: ${resolveName}`);
+  console.groupEnd();
 
-  if (resolver) {
+  if (resolver && resolveName) {
     const [
+
       ethAddress,
       btcAddress,
       dogeAddress,
-      twitterAccount,
-      contentHash,
+      contentHash
     ] = await Promise.all([
       resolver.getAddress(),    // ETH
       resolver.getAddress(0),   // BTC
       resolver.getAddress(3),   // DOGE
-      resolver.getText('com.twitter'),
       resolver.getContentHash(),
-      resolver.getAvatar(),
     ]);
 
     // fetch text records
@@ -71,16 +73,11 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
       resolver.getText("company")
     ]);
 
-    console.group("\n-> L1 informations")
-    console.log(`l1 offchain resolver address: ${resolver.address}`);
-    console.log(`name resolved: ${resolveName}`);
-    console.groupEnd();
-
     console.group("\n-> Data fetched from the layer2 resolver")
     console.log(`eth address: ${ethAddress}`);
     console.log(`btc address: ${btcAddress}`);
     console.log(`doge address: ${dogeAddress}`);
-    console.log(`twitter account: ${twitterAccount}`);
+    console.log(`twitter account: ${twitter}`);
     console.log(`content hash: ${contentHash}`);
     console.log(`avatar: ${avatar}`);
     console.log(`twitter: ${twitter}`);

@@ -20,7 +20,16 @@ const address = ethers.utils.computeAddress(privateKey);
 const signer = new ethers.utils.SigningKey(privateKey);
 const app = makeApp(signer, '/');
 
-console.log(`Serving on port ${PORT} with signing address ${address}`);
+console.log(`Serving on port ${PORT}`);
+
+// log the address of the signer EOA
+// this address must be copied to the .env file of the l1 package (SIGNER)
+console.log(
+  "\n\n\x1b[34m\x1b[1m",
+  `Signer address -> ${address}`,
+  "\x1b[0m\n\n"
+);
+
 app.listen(parseInt(PORT));
 
 module.exports = app;
