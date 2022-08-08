@@ -3,11 +3,11 @@ const { formatsByCoinType } = require("@ensdomains/address-encoder");
 const contentHash = require("content-hash");
 
 /*
- ** This script set additional informations for the qdqd.eth node
+ ** This script set additional informations for the myname.eth node
  */
 module.exports = async ({ deployments }) => {
   const [, owner] = await ethers.getSigners();
-  const node = ethers.utils.namehash("qdqd.eth");
+  const node = ethers.utils.namehash("myname.eth");
 
   // TODO: shouldn't this be managed automatically on-chain during the registration step?
   // Set ETH address

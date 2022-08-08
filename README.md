@@ -150,10 +150,10 @@ These informations should be printed:
 
 This is because the script correctly find the custom mydao's resolver but the subdomain is free in the registry stored in the layer2.
 
-Let's see what happens if you resolve `qdqd.mydao.eth`, the subdomain registered on the layer2 by the [deployment script](packages/l2/deploy/10_setup_l2.js).
+Let's see what happens if you resolve `myname.mydao.eth`, the subdomain registered on the layer2 by the [deployment script](packages/l2/deploy/10_setup_l2.js).
 
 ```bash
-yarn start:client qdqd.mydao.eth
+yarn start:client myname.mydao.eth
 ```
 
 ```
@@ -179,7 +179,7 @@ yarn start:client qdqd.mydao.eth
   company: ledger
 ```
 
-It works! Every data set during the deployement process ([this file](packages/l2/deploy/11_resolver_l2.js)) have been resolve as expected. The script correctly found the custom offchain resolver set in the layer1 for mydao, discovered the subdomain is owned and fetched all the data requested by the script. Note that the address displayed in the output should match the address of the first account printed when you run the command (`yarn start:l2`). This is because we use this account to register the `qdqd.mydao.eth` node as you can see in this file [`packages/contracts/deploy/10_offchain_resolver.js`](packages/l2/deploy/10_setup_l2.js).
+It works! Every data set during the deployement process ([this file](packages/l2/deploy/11_resolver_l2.js)) have been resolve as expected. The script correctly found the custom offchain resolver set in the layer1 for mydao, discovered the subdomain is owned and fetched all the data requested by the script. Note that the address displayed in the output should match the address of the first account printed when you run the command (`yarn start:l2`). This is because we use this account to register the `myname.mydao.eth` node as you can see in this file [`packages/contracts/deploy/10_offchain_resolver.js`](packages/l2/deploy/10_setup_l2.js).
 
 ## Appendix
 

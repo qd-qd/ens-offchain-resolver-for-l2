@@ -5,7 +5,7 @@ This package implements a very simple dig-like tool for querying ENS names, with
 ## Notice
 
 Please refer to the [.env.example](/packages/client/.env.example) file to know which environment variables are required.
-For the demo, the second-level domain `mydao.eth` is stored and configured on the mainnet and one subdomain of this domain `qdqd` is stored on the layer2. That means you need to request `qdqd.mydao.eth` to see the demo run properly.
+For the demo, the second-level domain `mydao.eth` is stored and configured on the mainnet and one subdomain of this domain `myname` is stored on the layer2. That means you need to request `myname.mydao.eth` to see the demo run properly.
 
 ## Usage
 
@@ -19,10 +19,10 @@ Then, start the package
 
 ```shell
 # From the root of the repository
-yarn start:client qdqd.mydao.eth
+yarn start:client myname.mydao.eth
 
 # From the root of the package
-yarn start qdqd.mydao.eth
+yarn start myname.mydao.eth
 ```
 
 > the `--provider` flag can optionally be specified to supply the URL to an Ethereum web3 provider; it defaults to `http://localhost:8001/`.

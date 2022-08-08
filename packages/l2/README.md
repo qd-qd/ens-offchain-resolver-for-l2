@@ -29,7 +29,7 @@ This contract extends the ENS NameWrapper contract. It is a smart contract that 
 There are three deployment scripts automatically run when you start the package.
 
 - [00_deploy_l2](deploy/00_deploy_l2.js) - Deploy the contracts listed above
-- [10_setup_l2](deploy/10_setup_l2.js) - Create the root node, register the `qdqd` subdomain and attach the `PublicResolver` to it
+- [10_setup_l2](deploy/10_setup_l2.js) - Create the root node, register the `myname` subdomain and attach the `PublicResolver` to it
 - [11_resolver_l2](deploy/11_resolver_l2.js) - Save a bunch of data to the subdomain previously registered
 
 ## Notice
