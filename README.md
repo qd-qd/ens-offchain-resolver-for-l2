@@ -8,19 +8,19 @@ ENS resolution requests to the resolver implemented in this repository are respo
 
 All of this happens transparently for end users. Offchain resolution is handled by supported clients such as ethers.js.
 
-## [Gateway Server](packages/gateway/readme.md)
+## [Gateway Server](packages/gateway/README.md)
 
 The gateway server implements the CCIP Read ([EIP 3668](https://eips.ethereum.org/EIPS/eip-3668)) and responds to requests by searching for names stored on-chain. Once a record is retrieved, it is signed using a predefined key to ensure its validity, then the record and the signature are returned to the caller so that they can be provided to the requesting contract, hosted on the mainnet. More details [here](packages/gateway).
 
-## [Client](packages/client/readme.md)
+## [Client](packages/client/README.md)
 
 The client package simulates a dApp or any scripts that would like to resolve an ENS and fetch additional informations. More details [here](packages/client).
 
-## [l1](packages/l1/readme.md)
+## [l1](packages/l1/README.md)
 
 This package is a minimalist reproduction of ENS' behaviour on the mainnet. In addition, everything needed to be [EIP 3668](https://eips.ethereum.org/EIPS/eip-3668)/[ENSIP 10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution) compliant is implemented there. The offchain resolver is defined on the second-level domain which will allow subdomains to be resolved elsewhere. More details [here](packages/l1).
 
-## [l2](packages/l2/readme.md)
+## [l2](packages/l2/README.md)
 
 Last but not least, this package implements an arbitrary way to store subdomain information on the layer2 side. Contracts defined here are requested by the gateway. In this implementation, we deploy a new registry which will store all the subdomains and we push a ENS-compliant PublicResolver that can be used by subdomains owners to store arbitrary data. More details [here](packages/l2).
 
@@ -54,7 +54,7 @@ Looking at the logs, you should find a line like this:
 
 > Registry address -> 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-This is the address of the registry deployed on the layer2. Copy this address and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the gateway package](packages/gateway/.env). The gateway needs it to know which contrat fetch.
+This is the address of the registry deployed on the layer2. Copy this address and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the gateway package](packages/gateway/.env.example). The gateway needs it to know which contrat fetch.
 
 Stop the l2 package. As you can see in the .env file of the gateway, the gateway needs a private key to works. This private key will be used as a signing key for any messages signed by your gateway service. It is important to ensure the data is unaltered.
 
@@ -66,7 +66,7 @@ python3 -c "import os; import binascii; print('0x%s' % binascii.hexlify(os.urand
 
 > Do not send mainnet tokens to any account addresses derived using this private key. Consider this private key as publicly known. If you add any of those accounts to a wallet (eg Metamask), be very careful to avoid sending any mainnet Ether to them: consider naming the account something like "Unsafe" in order to prevent any mistakes.
 
-Once your private key is generated, paste it as a value for the variable `PRIVATE_KEY` in the [.env file of the gateway package](packages/gateway/.env).
+Once your private key is generated, paste it as a value for the variable `PRIVATE_KEY` in the [.env file of the gateway package](packages/gateway/.env.example).
 
 We now have all we need to start the gateway package! Start it by running:
 
@@ -74,7 +74,7 @@ We now have all we need to start the gateway package! Start it by running:
 yarn start:gateway
 ```
 
-The gateway is up! In the output of the script, the signer address has been printed. This address is derived from the private key filled in your .env file. We need to push it on-chain on the l1 to check if the received data are from the gateway. Let's copy/paste this address and set it as a value for the `SIGNER` envionment variable in the [.env file of the l1 package](/packages/l1/.env).
+The gateway is up! In the output of the script, the signer address has been printed. This address is derived from the private key filled in your .env file. We need to push it on-chain on the l1 to check if the received data are from the gateway. Let's copy/paste this address and set it as a value for the `SIGNER` envionment variable in the [.env file of the l1 package](/packages/l1/.env.example).
 
 Now that the signer address is filled in, stop the gateway and start the l1 package by running:
 
@@ -86,7 +86,7 @@ Once again, running the l1 printed something interesting. In the log, you'll fin
 
 > Registry address -> 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-This is the address of the registry published on the l1. This is only required for the demo, in production, you will use the official registry deployed by ENS instead of deploying yours. Copy this value and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the client package](packages/client/.env). The client needs it to know which contrat request.
+This is the address of the registry published on the l1. This is only required for the demo, in production, you will use the official registry deployed by ENS instead of deploying yours. Copy this value and paste it as a value for the variable `REGISTRY_ADDRESS` in the [.env file of the client package](packages/client/.env.example). The client needs it to know which contrat request.
 
 That's it, everything is configured. Let's up the stack now.
 
