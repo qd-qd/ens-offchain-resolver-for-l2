@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "npx hardhat node --port 8002",
-    "test": "npx hardhat test",
+    "test": "run() { npx hardhat test; }; run",
     "lint": "npx hardhat check",
     "build": "npx hardhat compile",
     "prepublishOnly": "yarn build",
