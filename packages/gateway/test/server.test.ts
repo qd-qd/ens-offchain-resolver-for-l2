@@ -41,9 +41,8 @@ function expandSignature(sig: string) {
 }
 
 describe('makeServer', () => {
-  const key = new ethers.utils.SigningKey(ethers.utils.randomBytes(32));
-  const signingAddress = ethers.utils.computeAddress(key.privateKey);
-  const server = makeServer(key);
+  const signingAddress = ethers.utils.computeAddress(process.env.PRIVATE_KEY ?? "");
+  const server = makeServer(new ethers.utils.SigningKey(process.env.PRIVATE_KEY ?? ""));
 
   async function makeCall(fragment: string, name: string, ...args: any[]) {
     const TEST_ADDRESS = '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe';
