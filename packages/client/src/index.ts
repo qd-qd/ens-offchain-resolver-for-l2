@@ -36,7 +36,6 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
 
   if (resolver && resolveName) {
     const [
-
       ethAddress,
       btcAddress,
       dogeAddress,

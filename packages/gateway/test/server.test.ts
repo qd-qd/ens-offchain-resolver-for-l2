@@ -1,29 +1,11 @@
-import { makeServer } from '../src/server';
-import { ethers } from 'ethers';
-import { JSONDatabase } from '../src/json';
+
 import { abi as IResolverService_abi } from '@mydao/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
-import { ETH_COIN_TYPE } from '../src/utils';
+import { makeServer, ethers, VALID_NODE, VALID_ETH_ADDRESS } from "./mock";
+import { formatsByCoinType } from "@ensdomains/address-encoder";
 
 const IResolverService = new ethers.utils.Interface(IResolverService_abi);
 const Resolver = new ethers.utils.Interface(Resolver_abi);
-
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-const TEST_ADDRESS = '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe';
-const TEST_DB = {
-  '*.eth': {
-    addresses: {
-      [ETH_COIN_TYPE]: '0x2345234523452345234523452345234523452345',
-    },
-    text: { email: 'wildcard@example.com' },
-  },
-  'mydao.eth': {
-    addresses: {
-      [ETH_COIN_TYPE]: '0x3456345634563456345634563456345634563456',
-    },
-    text: { email: 'test@example.com' },
-  },
-};
 
 function dnsName(name: string) {
   // strip leading and trailing .
@@ -61,10 +43,10 @@ function expandSignature(sig: string) {
 describe('makeServer', () => {
   const key = new ethers.utils.SigningKey(ethers.utils.randomBytes(32));
   const signingAddress = ethers.utils.computeAddress(key.privateKey);
-  const db = new JSONDatabase(TEST_DB, 300);
-  const server = makeServer(key, db);
+  const server = makeServer(key);
 
   async function makeCall(fragment: string, name: string, ...args: any[]) {
+    const TEST_ADDRESS = '0xCAfEcAfeCAfECaFeCaFecaFecaFECafECafeCaFe';
     // Hash the name
     const node = ethers.utils.namehash(name);
     // Encode the inner call (eg, addr(namehash))
@@ -102,118 +84,123 @@ describe('makeServer', () => {
   }
 
   describe('addr(bytes32)', () => {
-    it('resolves exact names', async () => {
-      const response = await makeCall('addr(bytes32)', 'mydao.eth');
+    test('resolves exact names', async () => {
+      const response = await makeCall('addr(bytes32)', VALID_NODE);
       expect(response).toStrictEqual({
         status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32)', [
-          TEST_DB['mydao.eth'].addresses[ETH_COIN_TYPE],
-        ]),
+        result: Resolver.encodeFunctionResult('addr(bytes32)', [VALID_ETH_ADDRESS]),
       });
     });
 
-    it('resolves wildcard names', async () => {
+    test('resolves nonexistent subdomain', async () => {
+      const response = await makeCall('addr(bytes32)', 'test.mydao.eth');
+      expect(response).toStrictEqual({
+        status: 200,
+        result: Resolver.encodeFunctionResult('addr(bytes32)', [ethers.constants.AddressZero]),
+      });
+    });
+
+    test('resolves random name', async () => {
       const response = await makeCall('addr(bytes32)', 'foo.eth');
       expect(response).toStrictEqual({
         status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32)', [
-          TEST_DB['*.eth'].addresses[ETH_COIN_TYPE],
-        ]),
-      });
-    });
-
-    it('resolves nonexistent names', async () => {
-      const response = await makeCall('addr(bytes32)', 'test.mydao');
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32)', [ZERO_ADDRESS]),
+        result: Resolver.encodeFunctionResult('addr(bytes32)', [ethers.constants.AddressZero]),
       });
     });
   });
 
   describe('addr(bytes32,uint256)', () => {
-    it('resolves exact names', async () => {
-      const response = await makeCall(
-        'addr(bytes32,uint256)',
-        'mydao.eth',
-        ETH_COIN_TYPE
-      );
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32,uint256)', [
-          TEST_DB['mydao.eth'].addresses[ETH_COIN_TYPE],
-        ]),
+    const records = [
+      { coinType: 0, name: "BTC", expected: formatsByCoinType[0].decoder("bc1q8fnmuy9cfzmym062a93cuqh2l8l0p46gxy74pg") },
+      { coinType: 3, name: "DOGE", expected: formatsByCoinType[3].decoder("DBs4WcRE7eysKwRxHNX88XZVCQ9M6QSUSz") },
+      { coinType: 60, name: "ETH", expected: VALID_ETH_ADDRESS },
+      { coinType: 118, name: "COSMOS", expected: formatsByCoinType[118].decoder("cosmos14n3tx8s5ftzhlxvq0w5962v60vd82h30sythlz") },
+    ];
+
+    records.forEach(({ coinType, name, expected }) => {
+      test(`resolves ${name} address for existent name`, async () => {
+        const response = await makeCall('addr(bytes32,uint256)', VALID_NODE, coinType);
+        expect(response).toStrictEqual({
+          status: 200,
+          result: Resolver.encodeFunctionResult('addr(bytes32,uint256)', [expected]),
+        });
       });
     });
 
-    it('resolves wildcard names', async () => {
-      const response = await makeCall(
-        'addr(bytes32,uint256)',
-        'foo.eth',
-        ETH_COIN_TYPE
-      );
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32,uint256)', [
-          TEST_DB['*.eth'].addresses[ETH_COIN_TYPE],
-        ]),
+    records.forEach(({ name }) => {
+      test(`resolves ${name} address for nonexistent name`, async () => {
+        return makeCall('addr(bytes32,uint256)', 'test.mydao.eth', 60).catch(e =>
+          expect(e).toEqual(new Error("No resolver attached to this name")));
       });
     });
 
-    it('resolves nonexistent names', async () => {
-      const response = await makeCall(
-        'addr(bytes32,uint256)',
-        'test.mydao',
-        ETH_COIN_TYPE
-      );
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32,uint256)', [
-          ZERO_ADDRESS,
-        ]),
+
+    records.forEach(({ name }) => {
+      test(`resolves ${name} address for random name`, async () => {
+        return makeCall('addr(bytes32,uint256)', 'foo.eth', 60).catch(e =>
+          expect(e).toEqual(new Error("No resolver attached to this name")));
       });
     });
   });
 
   describe('text(bytes32,string)', () => {
-    it('resolves exact names', async () => {
-      const response = await makeCall(
-        'text(bytes32,string)',
-        'mydao.eth',
-        'email'
-      );
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('text(bytes32,string)', [
-          TEST_DB['mydao.eth'].text['email'],
-        ]),
+    const texts = [
+      ["avatar", "https://metadata.ens.domains/mainnet/avatar/qdqdqd.eth?v=1.0"],
+      ["com.twitter", "qdqd___"],
+      ["com.github", "qd-qd"],
+      ["org.telegram", "qd_qd_qd"],
+      ["email", "qdqdqdqdqd@protonmail.com"],
+      ["url", "https://ens.domains/"],
+      ["description", "smart-contract engineer"],
+      ["notice", "This is a custom notice"],
+      ["keywords", "solidity,ethereum,developer"],
+      ["company", "ledger"],
+      ["fake-key", ""]
+    ];
+
+    texts.forEach(([key, value]) => {
+      test(`resolves ${key} text for existent name`, async () => {
+        const response = await makeCall('text(bytes32,string)', VALID_NODE, key);
+        expect(response).toStrictEqual({
+          status: 200,
+          result: Resolver.encodeFunctionResult('text(bytes32,string)', [value]),
+        });
       });
     });
 
-    it('resolves wildcard names', async () => {
-      const response = await makeCall(
-        'text(bytes32,string)',
-        'foo.eth',
-        'email'
-      );
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('text(bytes32,string)', [
-          TEST_DB['*.eth'].text['email'],
-        ]),
+    texts.forEach(([key]) => {
+      test(`resolves ${key} text for nonexistent name`, async () => {
+        return makeCall('text(bytes32,string)', 'test.mydao.eth', key).catch(e =>
+          expect(e).toEqual(new Error("No resolver attached to this name")));
       });
     });
 
-    it('resolves nonexistent names', async () => {
-      const response = await makeCall(
-        'text(bytes32,string)',
-        'test.mydao',
-        'email'
-      );
+    texts.forEach(([key]) => {
+      test(`resolves ${key} text for nonexistent name`, async () => {
+        return makeCall('text(bytes32,string)', 'foo.eth', key).catch(e =>
+          expect(e).toEqual(new Error("No resolver attached to this name")));
+      });
+    });
+  });
+
+  describe('contenthash(bytes32)', () => {
+    test('resolves content hash for existent name', async () => {
+      const response = await makeCall('contenthash(bytes32)', VALID_NODE);
       expect(response).toStrictEqual({
         status: 200,
-        result: Resolver.encodeFunctionResult('text(bytes32,string)', ['']),
+        result: Resolver.encodeFunctionResult('contenthash(bytes32)',
+          ["0xe30101701220e09973e8c9e391cb063bd6654356e64e0ceced7858a29a8c01b165e30a5eb5be"]),
       });
+    });
+
+    test('resolves content hash text for nonexistent name', async () => {
+      return makeCall('contenthash(bytes32)', 'test.mydao.eth').catch(e =>
+        expect(e).toEqual(new Error("No resolver attached to this name")));
+    });
+
+    test('resolves content hash text for nonexistent name', async () => {
+      return makeCall('contenthash(bytes32)', 'foo.eth').catch(e =>
+        expect(e).toEqual(new Error("No resolver attached to this name")));
     });
   });
 });
