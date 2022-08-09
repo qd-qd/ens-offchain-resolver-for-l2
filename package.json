@@ -9,12 +9,18 @@
     "qdqd <qdqdqdqdqd@protonmail.com>"
   ],
   "license": "MIT",
-  "workspaces": [
-    "packages/l1",
-    "packages/l2",
-    "packages/gateway",
-    "packages/client"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/l1",
+      "packages/l2",
+      "packages/gateway",
+      "packages/client"
+    ],
+    "nohoist": [
+      "**/tsdx",
+      "**/tsdx/**"
+    ]
+  },
   "private": true,
   "scripts": {
     "start:gateway": "yarn workspace @mydao/ens-l2-resolver-gateway start",

@@ -1,5 +1,4 @@
 import { ethers, BaseContract, constants, providers } from 'ethers';
-import { abi as L2PublicResolverABI } from '../src/utils/L2PublicResolver.json';
 import { ConnectionInfo } from "@ethersproject/web";
 import { Network, Networkish } from "@ethersproject/networks";
 import { formatsByCoinType } from "@ensdomains/address-encoder";
@@ -10,10 +9,6 @@ const VALID_ETH_ADDRESS = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 
 // Mock ethers.Contract
 class MockedContract extends BaseContract {
-    constructor(resolverAddress: string, abi: typeof L2PublicResolverABI, wallet: ethers.Wallet) {
-        super(resolverAddress, abi, wallet);
-    }
-
     'contenthash(bytes32)'(nodehash: string) {
         return nodehash !== VALID_NODE_HASH
             ? ''

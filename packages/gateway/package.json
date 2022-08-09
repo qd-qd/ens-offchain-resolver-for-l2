@@ -31,6 +31,10 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "eslint": {
+    "extends": "react-app",
+    "root": true
+  },
   "name": "@mydao/ens-l2-resolver-gateway",
   "author": "Nick Johnson",
   "contributors": [

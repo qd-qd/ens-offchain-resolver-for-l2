@@ -29,23 +29,19 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
     provider.resolveName(name),
   ]);
 
-  console.group("\n-> L1 informations")
+  console.group('\n-> L1 informations');
   console.log(`l1 offchain resolver address: ${resolver?.address}`);
   console.log(`eth address: ${resolveName}`);
   console.groupEnd();
 
   if (resolver && resolveName) {
-    const [
-      ethAddress,
-      btcAddress,
-      dogeAddress,
-      contentHash
-    ] = await Promise.all([
-      resolver.getAddress(),    // ETH
-      resolver.getAddress(0),   // BTC
-      resolver.getAddress(3),   // DOGE
-      resolver.getContentHash(),
-    ]);
+    const [ethAddress, btcAddress, dogeAddress, contentHash] =
+      await Promise.all([
+        resolver.getAddress(), // ETH
+        resolver.getAddress(0), // BTC
+        resolver.getAddress(3), // DOGE
+        resolver.getContentHash(),
+      ]);
 
     // fetch text records
     const [
@@ -58,21 +54,21 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
       description,
       notice,
       keywords,
-      company
+      company,
     ] = await Promise.all([
-      resolver.getText("avatar"),
-      resolver.getText("com.twitter"),
-      resolver.getText("com.github"),
-      resolver.getText("org.telegram"),
-      resolver.getText("email"),
-      resolver.getText("url"),
-      resolver.getText("description"),
-      resolver.getText("notice"),
-      resolver.getText("keywords"),
-      resolver.getText("company")
+      resolver.getText('avatar'),
+      resolver.getText('com.twitter'),
+      resolver.getText('com.github'),
+      resolver.getText('org.telegram'),
+      resolver.getText('email'),
+      resolver.getText('url'),
+      resolver.getText('description'),
+      resolver.getText('notice'),
+      resolver.getText('keywords'),
+      resolver.getText('company'),
     ]);
 
-    console.group("\n-> Data fetched from the layer2 resolver")
+    console.group('\n-> Data fetched from the layer2 resolver');
     console.log(`eth address: ${ethAddress}`);
     console.log(`btc address: ${btcAddress}`);
     console.log(`doge address: ${dogeAddress}`);
