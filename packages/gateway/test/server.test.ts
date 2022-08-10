@@ -1,7 +1,8 @@
 
 import { abi as IResolverService_abi } from '@mydao/ens-l2-resolver-l1/artifacts/contracts/OffchainResolver.sol/IResolverService.json';
 import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
-import { makeServer, ethers, VALID_NODE, VALID_ETH_ADDRESS } from "./mock";
+import { ethers, VALID_NODE, VALID_ETH_ADDRESS } from "./mock";
+import { makeServer } from '../src/server';
 import { formatsByCoinType } from "@ensdomains/address-encoder";
 
 const IResolverService = new ethers.utils.Interface(IResolverService_abi);

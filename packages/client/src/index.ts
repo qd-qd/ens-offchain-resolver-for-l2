@@ -72,7 +72,6 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
     console.log(`eth address: ${ethAddress}`);
     console.log(`btc address: ${btcAddress}`);
     console.log(`doge address: ${dogeAddress}`);
-    console.log(`twitter account: ${twitter}`);
     console.log(`content hash: ${contentHash}`);
     console.log(`avatar: ${avatar}`);
     console.log(`twitter: ${twitter}`);
