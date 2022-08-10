@@ -1,0 +1,2 @@
+# TODO: solve the "Parsing error: Cannot read properties of undefined (reading 'map')" issue
+test/mock.ts

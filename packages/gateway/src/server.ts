@@ -15,10 +15,16 @@ export function makeServer(signer: ethers.utils.SigningKey) {
     {
       type: 'resolve',
       func: async ([encodedName, data]: Result, request) => {
+        // make the name human readable
         const name = decodeDnsName(Buffer.from(encodedName.slice(2), 'hex'));
-        const { signature, args } = IResolver.parseTransaction({ data });
-        const resolvedData = await resolve(name, signature, args);
-        const result = IResolver.encodeFunctionResult(signature, [resolvedData]);
+
+        // get the signature of the transaction
+        const tx = IResolver.parseTransaction({ data });
+
+        // resolve the requested data
+        const result = await resolve(name, tx.signature, data);
+
+        // set the validity of the data
         const validUntil = Math.floor(Date.now() / 1000 + TTL);
 
         // Hash and sign the response

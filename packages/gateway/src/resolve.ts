@@ -1,56 +1,33 @@
 import { ethers } from 'ethers';
-import { abi as L2PublicResolverABI } from './utils/L2PublicResolver.json';
-import setupProvider from "./setupProvider";
+import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 
-const { provider, wallet } = setupProvider();
-
-// TODO: Rework this function to use the generic `provider.call(...)`
-const fetchData = async (signature: string, nodeToResolve: string, args: ethers.utils.Result, resolverAddress: string) => {
-  // Set the contract to request it directly
-  const publicResolver = new ethers.Contract(resolverAddress, L2PublicResolverABI, wallet);
-  const nodehash = ethers.utils.namehash(nodeToResolve);
-
-  switch (signature) {
-    case 'addr(bytes32,uint256)':
-      return publicResolver[signature](nodehash, args.coinType);
-
-    case 'ABI(bytes32,uint256)':
-      return publicResolver[signature](args.contentTypes);
-
-    case 'text(bytes32,string)':
-      return publicResolver[signature](nodehash, args.key);
-
-    case 'dnsRecord(bytes32,bytes32,uint16)':
-      return publicResolver[signature](nodehash, args.name, args.resource);
-    case 'hasDNSRecords(bytes32,bytes32)':
-      return publicResolver[signature](nodehash, args.name);
-
-    case 'contenthash(bytes32)':
-    case 'zonehash(bytes32)':
-    case 'pubkey(bytes32)':
-    case 'name(bytes32)':
-      return publicResolver[signature](nodehash);
-
-    default:
-      throw new Error("Resolution not supported for this method");
-  }
-};
+const IResolver = new ethers.utils.Interface(Resolver_abi);
+const provider = new ethers.providers.JsonRpcProvider(
+  'http://localhost:8002/',
+  {
+    name: "layer2",
+    chainId: 22222,
+    ensAddress: process.env.REGISTRY_ADDRESS,
+  },
+);
 
 const resolve = async (
   name: string,
   signature: string,
-  args: ethers.utils.Result,
+  data: any
 ) => {
-  const nodeToResolve = name.replace('.mydao', '');
-
-  // manage the basic case when the address of the owner is requested
-  if (signature === 'addr(bytes32)')
-    return (await provider.resolveName(nodeToResolve)) ?? ethers.constants.AddressZero;
+  // manage the case when we try to resolve a name that doesn't have a resolver
+  // TODO: that doesn't seem right, find a way to avoid that if possible
+  if (signature === 'addr(bytes32)') {
+    const addr = (await provider.resolveName(name)) ?? ethers.constants.AddressZero;
+    return IResolver.encodeFunctionResult(signature, [addr]);
+  }
 
   // manage the case when informations from the resolver are requested
-  const resolver = await provider.getResolver(nodeToResolve);
-  if (resolver?.address)
-    return fetchData(signature, nodeToResolve, args, resolver?.address);
+  const resolver = await provider.getResolver(name);
+  if (resolver?.address) {
+    return provider.call({ to: resolver?.address, data });
+  }
 
   // complex data are requested but the name doesn't have a resolver set
   throw new Error('No resolver attached to this name');

@@ -1,9 +1,7 @@
 import { makeApp } from './server';
 import { readFileSync } from 'fs';
 import { ethers } from 'ethers';
-import dotenv from 'dotenv';
-
-dotenv.config({ path: './.env' });
+import 'dotenv/config';
 
 const PORT = process.env.PORT || '8080';
 
