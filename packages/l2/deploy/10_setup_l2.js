@@ -18,12 +18,22 @@ module.exports = async () => {
     admin.address
   );
 
-  // register myname.eth domain
+  // register mydao.eth domain
   await deployments.execute(
     "L2Registry",
     { from: admin.address },
     "setSubnodeOwner",
     ethers.utils.namehash("eth"),
+    ethers.utils.id("mydao"),
+    admin.address
+  );
+
+  // register myname.mydao.eth domain
+  await deployments.execute(
+    "L2Registry",
+    { from: admin.address },
+    "setSubnodeOwner",
+    ethers.utils.namehash("mydao.eth"),
     ethers.utils.id("myname"),
     owner.address
   );
@@ -33,7 +43,7 @@ module.exports = async () => {
     "L2Registry",
     { from: owner.address },
     "setResolver",
-    ethers.utils.namehash("myname.eth"),
+    ethers.utils.namehash("myname.mydao.eth"),
     l2PublicResolver.address
   );
 

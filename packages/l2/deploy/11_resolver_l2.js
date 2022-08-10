@@ -7,7 +7,7 @@ const contentHash = require("content-hash");
  */
 module.exports = async ({ deployments }) => {
   const [, owner] = await ethers.getSigners();
-  const node = ethers.utils.namehash("myname.eth");
+  const node = ethers.utils.namehash("myname.mydao.eth");
 
   // TODO: shouldn't this be managed automatically on-chain during the registration step?
   // Set ETH address
