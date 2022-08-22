@@ -9,8 +9,11 @@ module.exports = async ({ deployments }) => {
   const [, owner] = await ethers.getSigners();
   const node = ethers.utils.namehash("myname.mydao.eth");
 
-  // TODO: shouldn't this be managed automatically on-chain during the registration step?
   // Set ETH address
+  // @DEV: In production, the user will us the `registerWithConfig` method to automatically
+  //       - register a node
+  //       - link the node to a resolver
+  //       - set its EOA address as the ethereum address in the record
   await deployments.execute(
     "L2PublicResolver",
     { from: owner.address },

@@ -17,7 +17,8 @@ const resolve = async (
   data: any
 ) => {
   // manage the case when we try to resolve a name that doesn't have a resolver
-  // TODO: that doesn't seem right, find a way to avoid that if possible
+  // (by using the `registerWithConfig` method, a resolver would be automtically assigned
+  // during the registration process)
   if (signature === 'addr(bytes32)') {
     const addr = (await provider.resolveName(name)) ?? ethers.constants.AddressZero;
     return IResolver.encodeFunctionResult(signature, [addr]);
