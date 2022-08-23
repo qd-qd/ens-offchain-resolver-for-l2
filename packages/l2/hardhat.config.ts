@@ -14,13 +14,19 @@ dotenv.config();
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 const config: HardhatUserConfig = {
-  solidity: "0.8.10",
+  solidity: {
+    version: "0.8.10",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      }
+    },
+  },
   networks: {
     hardhat: {
       throwOnCallFailures: false,
       chainId: 22222,
-      // TODO: Remove/Refacto `L2NameWrapper.sol`?
-      allowUnlimitedContractSize: true,
     },
     goerli: {
       url: process.env.GOERLI_URL || "",
