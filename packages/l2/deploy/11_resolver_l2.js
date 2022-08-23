@@ -15,7 +15,7 @@ module.exports = async ({ deployments }) => {
   //       - link the node to a resolver
   //       - set its EOA address as the ethereum address in the record
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
@@ -25,7 +25,7 @@ module.exports = async ({ deployments }) => {
 
   // Set BITCOIN address
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
@@ -35,7 +35,7 @@ module.exports = async ({ deployments }) => {
 
   // Set COSMOS address
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
@@ -47,7 +47,7 @@ module.exports = async ({ deployments }) => {
 
   // Set DOGE address
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setAddr(bytes32,uint256,bytes)",
     node,
@@ -70,7 +70,7 @@ module.exports = async ({ deployments }) => {
   ];
   for (const [key, value] of texts) {
     await deployments.execute(
-      "L2PublicResolver",
+      "PublicResolver",
       { from: owner.address },
       "setText",
       node,
@@ -81,7 +81,7 @@ module.exports = async ({ deployments }) => {
 
   // Set a public key
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setPubkey",
     node,
@@ -91,7 +91,7 @@ module.exports = async ({ deployments }) => {
 
   // Set content hash: ipfs://QmdTPkMMBWQvL8t7yXogo7jq5pAcWg8J7RkLrDsWZHT82y
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setContenthash",
     node,
@@ -102,7 +102,7 @@ module.exports = async ({ deployments }) => {
 
   // Set canonical name
   await deployments.execute(
-    "L2PublicResolver",
+    "PublicResolver",
     { from: owner.address },
     "setName",
     node,

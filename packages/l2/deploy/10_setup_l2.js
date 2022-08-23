@@ -6,11 +6,11 @@ const { ethers } = require("hardhat");
  */
 module.exports = async () => {
   const [admin, owner] = await ethers.getSigners();
-  const l2PublicResolver = await ethers.getContract("L2PublicResolver");
+  const publicResolver = await ethers.getContract("PublicResolver");
 
   // create the root node
   await deployments.execute(
-    "L2Registry",
+    "ENSRegistry",
     { from: admin.address },
     "setSubnodeOwner",
     "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -20,7 +20,7 @@ module.exports = async () => {
 
   // register mydao.eth domain
   await deployments.execute(
-    "L2Registry",
+    "ENSRegistry",
     { from: admin.address },
     "setSubnodeOwner",
     ethers.utils.namehash("eth"),
@@ -30,7 +30,7 @@ module.exports = async () => {
 
   // register myname.mydao.eth domain
   await deployments.execute(
-    "L2Registry",
+    "ENSRegistry",
     { from: admin.address },
     "setSubnodeOwner",
     ethers.utils.namehash("mydao.eth"),
@@ -40,11 +40,11 @@ module.exports = async () => {
 
   // set the custom resolver
   await deployments.execute(
-    "L2Registry",
+    "ENSRegistry",
     { from: owner.address },
     "setResolver",
     ethers.utils.namehash("myname.mydao.eth"),
-    l2PublicResolver.address
+    publicResolver.address
   );
 
   // log the address of the owner of the ENS

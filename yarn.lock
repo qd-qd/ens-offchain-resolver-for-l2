@@ -1030,7 +1030,7 @@
 
 "@ensdomains/ens-contracts@^0.0.11":
   version "0.0.11"
-  resolved "https://registry.npmjs.org/@ensdomains/ens-contracts/-/ens-contracts-0.0.11.tgz"
+  resolved "https://registry.yarnpkg.com/@ensdomains/ens-contracts/-/ens-contracts-0.0.11.tgz#a1cd87af8c454b694acba5be1a44c1b20656a9be"
   integrity sha512-b74OlFcds9eyHy26uE2fGcM+ZCSFtPeRGVbUYWq3NRlf+9t8TIgPwF3rCNwpAFQG0B/AHb4C4hYX2BBJYR1zPg==
   dependencies:
     "@ensdomains/buffer" "^0.0.13"

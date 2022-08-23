@@ -1,28 +1,30 @@
 # ENS Offchain Resolver L2 Contracts
 
-This package contains Solidity contracts you can customise and deploy on any EVM-compatible networks. These contracts manage all the logic related to the subdomains (registration, renew, transfer...).
+This package contains Solidity contracts imported from the ENS library. You can extend them and deploy them on any EVM-compatible networks. These contracts manage all the logic related to the subdomains (registration, renew, transfer...).
 
 ## Contracts
 
-### [L2PublicResolver.sol](contracts/L2PublicResolver.sol)
+### [PublicResolver.sol](contracts/PublicResolver.sol)
 
-This contract is a resolver subdomains owners can use to store arbitrary linked to their ENS.
+This contract is a resolver subdomains owners can use to store arbitrary linked to their ENS. This contract is imported in the `imports.sol` file.
 
-### [L2Registry.sol](contracts/L2Registry.sol)
+### [Registry.sol](contracts/Registry.sol)
 
-This contract is the registry where subdomain would be stored.
+This contract is the registry where subdomain would be stored. This contract is imported in the `imports.sol` file.
 
-### [L2BaseRegistar.sol](contracts/L2BaseRegistar.sol)
+### [BaseRegistar.sol](contracts/BaseRegistar.sol)
 
-This contract extends the ENS BaseRegistar contract. It controls how subdomains are registered/renewed.
+This contract extends the ENS BaseRegistar contract. It controls how subdomains are registered/renewed. This contract is imported in the `imports.sol` file.
 
-### [L2NameWrapper.sol](contracts/L2NameWrapper.sol)
+### [NameWrapper.sol](contracts/NameWrapper.sol)
 
 This contract extends the ENS NameWrapper contract. It is a smart contract that wraps existing ENS name, providing several new features:
 
 - Wrapped names are ERC1155 tokens
 - Better permission control over wrapped names
 - Consistent API for names at any level of the hierarchy
+
+This contract is imported in the `NameWrapper.sol` file. Once the circular import fixed in the ENS library, this contract would be move to the `imports.sol` file.
 
 ## Deployments
 
