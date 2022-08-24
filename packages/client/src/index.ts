@@ -24,65 +24,69 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
 
 (async () => {
   const [name] = program.args;
-  let [resolver, resolveName] = await Promise.all([
-    provider.getResolver(name),
-    provider.resolveName(name),
+
+  // Check if a resolver is set for this node on the L1
+  const resolver = await provider.getResolver(name);
+  console.log(`l1 offchain resolver address: ${resolver?.address}`);
+  if (!resolver?.address) return;
+
+  // Check if the subdomain has been registered on the L2
+  let resolveName: null | string;
+  try {
+    resolveName = await provider.resolveName(name);
+  } catch {
+    console.log("the subdomain doesn't exist on the layer2");
+    return;
+  }
+  console.log(`eth address: ${resolveName}`);
+
+  // Fetch data from the resolver stored on the L2
+  const [ethAddress, btcAddress, dogeAddress, contentHash] = await Promise.all([
+    resolver.getAddress(), // ETH
+    resolver.getAddress(0), // BTC
+    resolver.getAddress(3), // DOGE
+    resolver.getContentHash(),
   ]);
 
-  console.group('\n-> L1 informations');
-  console.log(`l1 offchain resolver address: ${resolver?.address}`);
-  console.log(`eth address: ${resolveName}`);
+  // fetch text records
+  const [
+    avatar,
+    twitter,
+    github,
+    telegram,
+    email,
+    url,
+    description,
+    notice,
+    keywords,
+    company,
+  ] = await Promise.all([
+    resolver.getText('avatar'),
+    resolver.getText('com.twitter'),
+    resolver.getText('com.github'),
+    resolver.getText('org.telegram'),
+    resolver.getText('email'),
+    resolver.getText('url'),
+    resolver.getText('description'),
+    resolver.getText('notice'),
+    resolver.getText('keywords'),
+    resolver.getText('company'),
+  ]);
+
+  console.group('\n-> Data fetched from the layer2 resolver');
+  console.log(`eth address: ${ethAddress}`);
+  console.log(`btc address: ${btcAddress}`);
+  console.log(`doge address: ${dogeAddress}`);
+  console.log(`content hash: ${contentHash}`);
+  console.log(`avatar: ${avatar}`);
+  console.log(`twitter: ${twitter}`);
+  console.log(`github: ${github}`);
+  console.log(`telegram: ${telegram}`);
+  console.log(`email: ${email}`);
+  console.log(`url: ${url}`);
+  console.log(`description: ${description}`);
+  console.log(`notice: ${notice}`);
+  console.log(`keywords: ${keywords}`);
+  console.log(`company: ${company}`);
   console.groupEnd();
-
-  if (resolver && resolveName) {
-    const [ethAddress, btcAddress, dogeAddress, contentHash] =
-      await Promise.all([
-        resolver.getAddress(), // ETH
-        resolver.getAddress(0), // BTC
-        resolver.getAddress(3), // DOGE
-        resolver.getContentHash(),
-      ]);
-
-    // fetch text records
-    const [
-      avatar,
-      twitter,
-      github,
-      telegram,
-      email,
-      url,
-      description,
-      notice,
-      keywords,
-      company,
-    ] = await Promise.all([
-      resolver.getText('avatar'),
-      resolver.getText('com.twitter'),
-      resolver.getText('com.github'),
-      resolver.getText('org.telegram'),
-      resolver.getText('email'),
-      resolver.getText('url'),
-      resolver.getText('description'),
-      resolver.getText('notice'),
-      resolver.getText('keywords'),
-      resolver.getText('company'),
-    ]);
-
-    console.group('\n-> Data fetched from the layer2 resolver');
-    console.log(`eth address: ${ethAddress}`);
-    console.log(`btc address: ${btcAddress}`);
-    console.log(`doge address: ${dogeAddress}`);
-    console.log(`content hash: ${contentHash}`);
-    console.log(`avatar: ${avatar}`);
-    console.log(`twitter: ${twitter}`);
-    console.log(`github: ${github}`);
-    console.log(`telegram: ${telegram}`);
-    console.log(`email: ${email}`);
-    console.log(`url: ${url}`);
-    console.log(`description: ${description}`);
-    console.log(`notice: ${notice}`);
-    console.log(`keywords: ${keywords}`);
-    console.log(`company: ${company}`);
-    console.groupEnd();
-  }
 })();

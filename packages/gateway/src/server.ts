@@ -1,12 +1,10 @@
 import { Server } from '@chainlink/ccip-read-server';
-import { abi as Resolver_abi } from '@ensdomains/ens-contracts/artifacts/contracts/resolvers/Resolver.sol/Resolver.json';
 import { ethers } from 'ethers';
 import { hexConcat, Result } from 'ethers/lib/utils';
 import { abi as IResolverService_abi } from './utils/IResolverService.json';
 import resolve from './resolve';
 import decodeDnsName from './utils/decodeDnsName';
 
-const IResolver = new ethers.utils.Interface(Resolver_abi);
 const TTL = parseInt(process.env.TTL || "") || 300;
 
 export function makeServer(signer: ethers.utils.SigningKey) {
@@ -18,11 +16,8 @@ export function makeServer(signer: ethers.utils.SigningKey) {
         // make the name human readable
         const name = decodeDnsName(Buffer.from(encodedName.slice(2), 'hex'));
 
-        // get the signature of the transaction
-        const tx = IResolver.parseTransaction({ data });
-
         // resolve the requested data
-        const result = await resolve(name, tx.signature, data);
+        const result = await resolve(name, data);
 
         // set the validity of the data
         const validUntil = Math.floor(Date.now() / 1000 + TTL);
