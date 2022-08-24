@@ -14,6 +14,11 @@ const VALID_ETH_ADDRESS = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 
 const resolve = (signature: string, args: string[] | ethers.BigNumber[]) => {
     switch (signature) {
+        case 'addr(bytes32)': {
+            const [nodehash] = args;
+            return nodehash === VALID_NODE_HASH ? VALID_ETH_ADDRESS : constants.AddressZero;
+        }
+
         case 'contenthash(bytes32)': {
             const [nodehash] = args;
             return nodehash !== VALID_NODE_HASH
@@ -72,12 +77,6 @@ class MockedProvider extends providers.JsonRpcProvider {
             chainId: 22222,
             ensAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
         })
-    }
-
-    // 'addr(bytes32,uint256)'
-    resolveName(name: string): Promise<string | null> {
-        if (name === this.VALID_NODE) return Promise.resolve(VALID_ETH_ADDRESS);
-        return Promise.resolve(ethers.constants.AddressZero);
     }
 
     getResolver(name: string): Promise<ethers.providers.Resolver | null> {

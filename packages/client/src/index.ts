@@ -34,7 +34,8 @@ const provider = new ethers.providers.JsonRpcProvider(options.provider, {
   let resolveName: null | string;
   try {
     resolveName = await provider.resolveName(name);
-  } catch {
+  } catch (e) {
+    console.log(e);
     console.log("the subdomain doesn't exist on the layer2");
     return;
   }

@@ -93,19 +93,13 @@ describe('makeServer', () => {
     });
 
     test('resolves nonexistent subdomain', async () => {
-      const response = await makeCall('addr(bytes32)', 'test.mydao.eth');
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32)', [ethers.constants.AddressZero]),
-      });
+      return makeCall('addr(bytes32)', 'test.mydao.eth').catch(e =>
+        expect(e).toEqual(new Error("No resolver attached to this name")));
     });
 
     test('resolves random name', async () => {
-      const response = await makeCall('addr(bytes32)', 'foo.eth');
-      expect(response).toStrictEqual({
-        status: 200,
-        result: Resolver.encodeFunctionResult('addr(bytes32)', [ethers.constants.AddressZero]),
-      });
+      return makeCall('addr(bytes32)', 'test.mydao.eth').catch(e =>
+        expect(e).toEqual(new Error("No resolver attached to this name")));
     });
   });
 
@@ -202,5 +196,6 @@ describe('makeServer', () => {
       return makeCall('contenthash(bytes32)', 'foo.eth').catch(e =>
         expect(e).toEqual(new Error("No resolver attached to this name")));
     });
+
   });
 });
