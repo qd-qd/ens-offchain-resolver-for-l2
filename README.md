@@ -1,5 +1,7 @@
 # ENS Offchain Resolver for L2
 
+[![Twitter Follow](https://img.shields.io/twitter/follow/qdqd___?style=social)](https://twitter.com/qdqd___)
+
 This repository shows how it is possible to resolve subdomains from an EVM-enabled blockchain based on [EIP 3668](https://eips.ethereum.org/EIPS/eip-3668) and [ENSIP 10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution). The goal is to store the second-level domain on the main network while all subdomains attached to it are resolved in another EVM-enabled blockchain.
 
 ## Overview
